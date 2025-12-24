@@ -67,7 +67,7 @@ class Settings extends CI_Controller {
                 }
             } else {
                 // Insert new settings
-                if ($this->db->insert('settings', $data)) {
+                if ($this->Settings_model->create($data)) {
                     $this->session->set_flashdata('success', 'Pengaturan berhasil disimpan');
                 } else {
                     $this->session->set_flashdata('error', 'Gagal menyimpan pengaturan');

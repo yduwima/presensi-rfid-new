@@ -14,6 +14,10 @@ class Settings_model extends CI_Model {
         return $this->db->update($this->table, $data);
     }
 
+    public function create($data) {
+        return $this->db->insert($this->table, $data);
+    }
+
     public function get_by_id($id) {
         return $this->db->get_where($this->table, array('id' => $id))->row();
     }

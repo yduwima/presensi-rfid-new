@@ -71,7 +71,7 @@
                             <input type="hidden" name="id" value="<?= $t->id ?>">
                             
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <?= ucwords(str_replace('_', ' ', isset($t->tipe) ? $t->tipe : $t->type)) ?>
+                                <?= ucwords(str_replace('_', ' ', $t->type)) ?>
                             </label>
                             
                             <textarea name="template" rows="4" 
