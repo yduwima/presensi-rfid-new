@@ -350,7 +350,5 @@ INSERT INTO `hari_kerja` (`hari`, `jam_masuk`, `jam_pulang`, `is_active`) VALUES
 
 -- Insert default WA templates
 INSERT INTO `wa_templates` (`type`, `template`, `is_active`) VALUES
-('masuk', 'Yth. Orang Tua/Wali dari *{nama_siswa}*\n\nAnanda telah melakukan absensi masuk pada:\nTanggal: {tanggal}\nJam: {jam}\nStatus: {status}\n\nTerima kasih', 1),
-('pulang', 'Yth. Orang Tua/Wali dari *{nama_siswa}*\n\nAnanda telah melakukan absensi pulang pada:\nTanggal: {tanggal}\nJam: {jam}\n\nTerima kasih', 1),
-('reminder', 'Yth. Wali Kelas *{kelas}*\n\nBerikut siswa yang belum melakukan absensi sampai jam 09:00:\n{daftar_siswa}\n\nMohon segera ditindaklanjuti.', 1),
-('bk', 'Yth. Orang Tua/Wali dari *{nama_siswa}*\n\nDengan hormat, kami mengundang untuk hadir:\nTanggal: {tanggal}\nWaktu: {waktu}\nTempat: Ruang BK\nKeperluan: {keperluan}\n\nTerima kasih', 1);
+('masuk', 'Assalamualaikum, {nama} dari kelas {kelas} telah hadir di sekolah pada {tanggal} pukul {waktu}. Terima kasih.', 1),
+('pulang', 'Assalamualaikum, {nama} dari kelas {kelas} telah pulang dari sekolah pada {tanggal} pukul {waktu}. Terima kasih.', 1);

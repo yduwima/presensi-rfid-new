@@ -64,29 +64,37 @@
         </h2>
         
         <div class="space-y-4">
-            <?php foreach ($templates as $t): ?>
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <form action="<?= base_url('admin/wa_settings/update_template') ?>" method="post">
-                        <input type="hidden" name="id" value="<?= $t->id ?>">
-                        
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <?= ucwords(str_replace('_', ' ', $t->tipe)) ?>
-                        </label>
-                        
-                        <textarea name="template" rows="4" 
-                                  class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 mb-2"><?= $t->template ?></textarea>
-                        
-                        <div class="flex justify-between items-center">
-                            <p class="text-xs text-gray-500">
-                                Variabel: {nama}, {kelas}, {waktu}, {tanggal}, {status}
-                            </p>
-                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-md text-sm transition">
-                                <i class="fas fa-save mr-1"></i>Simpan
-                            </button>
-                        </div>
-                    </form>
+            <?php if (!empty($templates)): ?>
+                <?php foreach ($templates as $t): ?>
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <form action="<?= base_url('admin/wa_settings/update_template') ?>" method="post">
+                            <input type="hidden" name="id" value="<?= $t->id ?>">
+                            
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <?= ucwords(str_replace('_', ' ', isset($t->tipe) ? $t->tipe : $t->type)) ?>
+                            </label>
+                            
+                            <textarea name="template" rows="4" 
+                                      class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 mb-2"><?= $t->template ?></textarea>
+                            
+                            <div class="flex justify-between items-center">
+                                <p class="text-xs text-gray-500">
+                                    Variabel: {nama}, {kelas}, {waktu}, {tanggal}, {status}
+                                </p>
+                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1.5 rounded-md text-sm transition">
+                                    <i class="fas fa-save mr-1"></i>Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-inbox text-4xl mb-2"></i>
+                    <p>Belum ada template pesan.</p>
+                    <p class="text-sm">Silakan tambahkan data template di database.</p>
                 </div>
-            <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 
