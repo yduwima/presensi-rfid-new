@@ -9,12 +9,14 @@ class Absensi extends CI_Controller {
         $this->load->model('Guru_model');
         $this->load->model('Absensi_model');
         $this->load->model('Hari_kerja_model');
+        $this->load->model('Settings_model');
         $this->load->library('Whatsapp');
     }
 
     public function index() {
         // Main RFID scanning page (no login required)
         $data['title'] = 'Absensi RFID';
+        $data['settings'] = $this->Settings_model->get();
         $this->load->view('absensi/scan', $data);
     }
 
