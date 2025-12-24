@@ -123,13 +123,22 @@ class Absensi extends CI_Controller {
     }
 
     private function _queue_wa_notification($user_type, $user_data, $type, $absen) {
-        // Only send WA for siswa
-        if ($user_type != 'siswa' || empty($user_data->telp_ortu)) {
+        $this->load->model('Wa_model');
+        
+        // Determine phone number based on user type
+        $phone = null;
+        if ($user_type == 'siswa') {
+            $phone = !empty($user_data->telp_ortu) ? $user_data->telp_ortu : null;
+        } elseif ($user_type == 'guru') {
+            $phone = !empty($user_data->telp) ? $user_data->telp : null;
+        }
+        
+        // Skip if no phone number
+        if (empty($phone)) {
             return;
         }
 
         // Get WA template
-        $this->load->model('Wa_model');
         $template = $this->Wa_model->get_template($type);
         
         if (!$template) {
@@ -138,9 +147,12 @@ class Absensi extends CI_Controller {
 
         // Replace placeholders
         $message = $template->template;
-        $message = str_replace('{nama_siswa}', $user_data->nama, $message);
+        $message = str_replace('{nama}', $user_data->nama, $message);
+        $message = str_replace('{nama_siswa}', $user_data->nama, $message); // Backward compatibility
+        $message = str_replace('{nama_guru}', $user_data->nama, $message);
         $message = str_replace('{tanggal}', date('d-m-Y'), $message);
         $message = str_replace('{jam}', date('H:i', strtotime($type == 'masuk' ? $absen->jam_masuk : $absen->jam_pulang)), $message);
+        $message = str_replace('{waktu}', date('H:i', strtotime($type == 'masuk' ? $absen->jam_masuk : $absen->jam_pulang)), $message);
         
         if ($type == 'masuk') {
             $status_text = $absen->status_masuk == 'tepat_waktu' ? 'Tepat Waktu' : 'Terlambat ' . $absen->menit_keterlambatan . ' menit';
@@ -148,7 +160,7 @@ class Absensi extends CI_Controller {
         }
 
         // Add to queue
-        $this->Wa_model->add_to_queue($user_data->telp_ortu, $message);
+        $this->Wa_model->add_to_queue($phone, $message);
     }
 
     private function _translate_day($day) {

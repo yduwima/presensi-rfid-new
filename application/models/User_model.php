@@ -71,4 +71,12 @@ class User_model extends CI_Model {
         
         return $this->db->get($this->table)->result();
     }
+
+    public function get_by_guru_id($guru_id) {
+        return $this->db->get_where($this->table, array('guru_id' => $guru_id))->row();
+    }
+
+    public function delete_by_guru_id($guru_id) {
+        return $this->db->delete($this->table, array('guru_id' => $guru_id));
+    }
 }

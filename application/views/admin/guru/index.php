@@ -97,6 +97,10 @@
                                             class="text-blue-600 hover:text-blue-800" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <button onclick="confirmResetPassword(<?php echo $g->id; ?>, <?php echo htmlspecialchars(json_encode($g->nama), ENT_QUOTES, 'UTF-8'); ?>)" 
+                                            class="text-yellow-600 hover:text-yellow-800" title="Reset Password">
+                                        <i class="fas fa-key"></i>
+                                    </button>
                                     <a href="<?php echo base_url('admin/guru/delete/'.$g->id); ?>" 
                                        class="text-red-600 hover:text-red-800"
                                        onclick="return confirmDelete()" title="Hapus">
@@ -265,4 +269,14 @@
             closeModal();
         }
     });
+
+    function confirmDelete() {
+        return confirm('Apakah Anda yakin ingin menghapus data guru ini? Akun user terkait juga akan dihapus.');
+    }
+
+    function confirmResetPassword(id, nama) {
+        if (confirm('Reset password untuk ' + nama + '?\nPassword akan direset ke NIP guru.')) {
+            window.location.href = '<?php echo base_url('admin/guru/reset_password/'); ?>' + id;
+        }
+    }
 </script>

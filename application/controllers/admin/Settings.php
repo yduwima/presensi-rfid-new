@@ -40,6 +40,12 @@ class Settings extends CI_Controller {
             
             // Handle logo upload
             if (!empty($_FILES['logo']['name'])) {
+                // Create uploads folder if not exists
+                $upload_path = './assets/uploads/';
+                if (!is_dir($upload_path)) {
+                    mkdir($upload_path, 0777, true);
+                }
+                
                 $config['upload_path'] = './assets/uploads/';
                 $config['allowed_types'] = 'jpg|jpeg|png';
                 $config['max_size'] = 2048;

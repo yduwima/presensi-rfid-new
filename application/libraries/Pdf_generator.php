@@ -50,8 +50,8 @@ class Pdf_generator {
         // School name
         $this->pdf->Cell(0, 7, strtoupper($settings->nama_sekolah), 0, 1, 'C');
         $this->pdf->SetFont('Arial', '', 10);
-        $this->pdf->Cell(0, 5, $settings->alamat, 0, 1, 'C');
-        $this->pdf->Cell(0, 5, 'Telp: ' . $settings->telp . ' | Email: ' . $settings->email, 0, 1, 'C');
+        $this->pdf->Cell(0, 5, $settings->alamat_sekolah ?: '', 0, 1, 'C');
+        $this->pdf->Cell(0, 5, 'Telp: ' . ($settings->no_telephone ?: '') . ' | Email: ' . ($settings->email ?: ''), 0, 1, 'C');
         
         // Line
         $this->pdf->Ln(2);
