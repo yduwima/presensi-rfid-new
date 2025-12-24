@@ -199,12 +199,6 @@ class Guru extends CI_Controller {
             return;
         }
         
-        // Verify authorization - only admin can reset passwords
-        if ($this->session->userdata('role') != 'admin') {
-            show_error('Akses ditolak', 403, 'Forbidden');
-            return;
-        }
-        
         $guru = $this->Guru_model->get_by_id($id);
         
         if (!$guru) {
