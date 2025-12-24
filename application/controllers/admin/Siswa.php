@@ -134,4 +134,97 @@ class Siswa extends CI_Controller {
         
         redirect('admin/siswa');
     }
+    
+    public function import() {
+        $data['title'] = 'Import Data Siswa';
+        $data['active_menu'] = 'siswa';
+        
+        $this->load->view('templates/admin_header', $data);
+        $this->load->view('admin/siswa/import', $data);
+        $this->load->view('templates/admin_footer');
+    }
+    
+    public function download_template() {
+        $this->load->library('Excel_import');
+        $this->excel_import->generate_siswa_template();
+    }
+    
+    public function process_import() {
+        if (!$this->input->post()) {
+            redirect('admin/siswa/import');
+        }
+        
+        // Handle file upload
+        $config['upload_path'] = './assets/uploads/temp/';
+        $config['allowed_types'] = 'xlsx|xls|csv';
+        $config['max_size'] = 5120; // 5MB
+        $config['file_name'] = 'import_siswa_' . time();
+        
+        // Create temp directory if not exists
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, true);
+        }
+        
+        $this->load->library('upload', $config);
+        
+        if (!$this->upload->do_upload('file')) {
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+            redirect('admin/siswa/import');
+        }
+        
+        $file_data = $this->upload->data();
+        $file_path = $file_data['full_path'];
+        
+        // Read and validate file
+        $this->load->library('Excel_import');
+        $read_result = $this->excel_import->read_file($file_path);
+        
+        if (!$read_result['success']) {
+            unlink($file_path);
+            $this->session->set_flashdata('error', $read_result['message']);
+            redirect('admin/siswa/import');
+        }
+        
+        $validation = $this->excel_import->validate_siswa($read_result['data']);
+        
+        // Import valid rows
+        $success_count = 0;
+        $error_count = 0;
+        
+        foreach ($validation['valid'] as $row) {
+            $data = array(
+                'nis' => $row['NIS'],
+                'nisn' => isset($row['NISN']) ? $row['NISN'] : null,
+                'nama' => $row['Nama'],
+                'kelas_id' => isset($row['Kelas ID']) ? $row['Kelas ID'] : null,
+                'jenis_kelamin' => isset($row['Jenis Kelamin']) ? $row['Jenis Kelamin'] : 'L',
+                'tempat_lahir' => isset($row['Tempat Lahir']) ? $row['Tempat Lahir'] : null,
+                'tanggal_lahir' => isset($row['Tanggal Lahir']) ? $row['Tanggal Lahir'] : null,
+                'alamat' => isset($row['Alamat']) ? $row['Alamat'] : null,
+                'telp_siswa' => isset($row['No HP Siswa']) ? $row['No HP Siswa'] : null,
+                'nama_ortu' => isset($row['Nama Orang Tua']) ? $row['Nama Orang Tua'] : null,
+                'telp_ortu' => isset($row['No HP Orang Tua']) ? $row['No HP Orang Tua'] : null,
+                'rfid_uid' => isset($row['RFID UID']) ? $row['RFID UID'] : null,
+                'is_active' => 1
+            );
+            
+            if ($this->Siswa_model->create($data)) {
+                $success_count++;
+            } else {
+                $error_count++;
+            }
+        }
+        
+        // Delete uploaded file
+        unlink($file_path);
+        
+        // Set flash message
+        $message = "Import selesai. Berhasil: {$success_count}, Gagal: {$error_count}";
+        if ($validation['error_count'] > 0) {
+            $message .= ", Error validasi: {$validation['error_count']}";
+        }
+        
+        $this->session->set_flashdata('success', $message);
+        redirect('admin/siswa');
+    }
 }

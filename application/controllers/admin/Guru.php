@@ -127,4 +127,94 @@ class Guru extends CI_Controller {
         
         redirect('admin/guru');
     }
+    
+    public function import() {
+        $data['title'] = 'Import Data Guru';
+        $data['active_menu'] = 'guru';
+        
+        $this->load->view('templates/admin_header', $data);
+        $this->load->view('admin/guru/import', $data);
+        $this->load->view('templates/admin_footer');
+    }
+    
+    public function download_template() {
+        $this->load->library('Excel_import');
+        $this->excel_import->generate_guru_template();
+    }
+    
+    public function process_import() {
+        if (!$this->input->post()) {
+            redirect('admin/guru/import');
+        }
+        
+        // Handle file upload
+        $config['upload_path'] = './assets/uploads/temp/';
+        $config['allowed_types'] = 'xlsx|xls|csv';
+        $config['max_size'] = 5120; // 5MB
+        $config['file_name'] = 'import_guru_' . time();
+        
+        // Create temp directory if not exists
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, true);
+        }
+        
+        $this->load->library('upload', $config);
+        
+        if (!$this->upload->do_upload('file')) {
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+            redirect('admin/guru/import');
+        }
+        
+        $file_data = $this->upload->data();
+        $file_path = $file_data['full_path'];
+        
+        // Read and validate file
+        $this->load->library('Excel_import');
+        $read_result = $this->excel_import->read_file($file_path);
+        
+        if (!$read_result['success']) {
+            unlink($file_path);
+            $this->session->set_flashdata('error', $read_result['message']);
+            redirect('admin/guru/import');
+        }
+        
+        $validation = $this->excel_import->validate_guru($read_result['data']);
+        
+        // Import valid rows
+        $success_count = 0;
+        $error_count = 0;
+        
+        foreach ($validation['valid'] as $row) {
+            $data = array(
+                'nip' => $row['NIP'],
+                'nama' => $row['Nama'],
+                'email' => isset($row['Email']) ? $row['Email'] : null,
+                'telp' => isset($row['No HP']) ? $row['No HP'] : null,
+                'alamat' => isset($row['Alamat']) ? $row['Alamat'] : null,
+                'is_wali_kelas' => isset($row['Wali Kelas']) ? (int)$row['Wali Kelas'] : 0,
+                'is_piket' => isset($row['Piket']) ? (int)$row['Piket'] : 0,
+                'is_bk' => isset($row['BK']) ? (int)$row['BK'] : 0,
+                'rfid_uid' => isset($row['RFID UID']) ? $row['RFID UID'] : null,
+                'is_active' => 1
+            );
+            
+            if ($this->Guru_model->create($data)) {
+                $success_count++;
+            } else {
+                $error_count++;
+            }
+        }
+        
+        // Delete uploaded file
+        unlink($file_path);
+        
+        // Set flash message
+        $message = "Import selesai. Berhasil: {$success_count}, Gagal: {$error_count}";
+        if ($validation['error_count'] > 0) {
+            $message .= ", Error validasi: {$validation['error_count']}";
+        }
+        
+        $this->session->set_flashdata('success', $message);
+        redirect('admin/guru');
+    }
 }

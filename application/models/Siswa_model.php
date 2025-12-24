@@ -34,6 +34,10 @@ class Siswa_model extends CI_Model {
         return $this->db->get_where($this->table, array('rfid_uid' => $rfid_uid))->row();
     }
 
+    public function get_by_nis($nis) {
+        return $this->db->get_where($this->table, array('nis' => $nis))->row();
+    }
+
     public function create($data) {
         return $this->db->insert($this->table, $data);
     }
