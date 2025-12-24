@@ -6,6 +6,34 @@
 </div>
 
 <div class="bg-white rounded-lg shadow-md p-6">
+    <!-- Search and Filter -->
+    <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center space-x-2">
+            <label class="text-sm text-gray-600">Show</label>
+            <select onchange="changePerPage(this.value)" class="px-3 py-1 border border-gray-300 rounded-lg text-sm">
+                <option value="10" <?php echo $per_page == 10 ? 'selected' : ''; ?>>10</option>
+                <option value="20" <?php echo $per_page == 20 ? 'selected' : ''; ?>>20</option>
+                <option value="30" <?php echo $per_page == 30 ? 'selected' : ''; ?>>30</option>
+                <option value="50" <?php echo $per_page == 50 ? 'selected' : ''; ?>>50</option>
+                <option value="100" <?php echo $per_page == 100 ? 'selected' : ''; ?>>100</option>
+            </select>
+            <label class="text-sm text-gray-600">entries</label>
+        </div>
+        
+        <div>
+            <form method="GET" action="<?php echo base_url('admin/mata_pelajaran'); ?>" class="flex items-center">
+                <input type="hidden" name="per_page" value="<?php echo $per_page; ?>">
+                <input type="text" name="search" value="<?php echo $search; ?>" 
+                       placeholder="Cari kode, nama mata pelajaran..." 
+                       class="px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Table -->
     <div class="overflow-x-auto">
         <table class="min-w-full table">
             <thead>
@@ -19,7 +47,10 @@
             </thead>
             <tbody>
                 <?php if (!empty($mata_pelajaran)): ?>
-                    <?php $no = 1; foreach ($mata_pelajaran as $mp): ?>
+                    <?php 
+                    $no = ($this->input->get('page') ? ($this->input->get('page') - 1) * $per_page : 0) + 1;
+                    foreach ($mata_pelajaran as $mp): 
+                    ?>
                         <tr>
                             <td><?php echo $no++; ?></td>
                             <td class="font-medium"><?php echo $mp->kode; ?></td>
@@ -43,13 +74,20 @@
                 <?php else: ?>
                     <tr>
                         <td colspan="5" class="text-center py-8 text-gray-500">
-                            Belum ada data mata pelajaran
+                            <?php echo $search ? 'Tidak ada data yang sesuai dengan pencarian' : 'Belum ada data mata pelajaran'; ?>
                         </td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
+    
+    <!-- Pagination -->
+    <?php if (!empty($pagination)): ?>
+        <div class="flex justify-center mt-6">
+            <?php echo $pagination; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <!-- Modal -->
@@ -100,6 +138,13 @@
 </div>
 
 <script>
+    function changePerPage(value) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', value);
+        url.searchParams.delete('page'); // Reset to first page
+        window.location.href = url.toString();
+    }
+    
     function openModal(mode) {
         const modal = document.getElementById('mapelModal');
         const form = document.getElementById('mapelForm');
@@ -133,6 +178,10 @@
         document.getElementById('deskripsi').value = data.deskripsi || '';
         
         modal.classList.remove('hidden');
+    }
+    
+    function confirmDelete() {
+        return confirm('Apakah Anda yakin ingin menghapus mata pelajaran ini?');
     }
 
     // Close modal when clicking outside

@@ -39,11 +39,18 @@ class Mata_pelajaran_model extends CI_Model {
     public function search($keyword, $limit = null, $offset = null) {
         $this->db->like('nama', $keyword);
         $this->db->or_like('kode', $keyword);
+        $this->db->order_by('nama', 'ASC');
         
         if ($limit !== null) {
             $this->db->limit($limit, $offset);
         }
         
         return $this->db->get($this->table)->result();
+    }
+    
+    public function count_search($keyword) {
+        $this->db->like('nama', $keyword);
+        $this->db->or_like('kode', $keyword);
+        return $this->db->count_all_results($this->table);
     }
 }

@@ -5,12 +5,17 @@ class Kelas_model extends CI_Model {
 
     protected $table = 'kelas';
 
-    public function get_all() {
+    public function get_all($limit = null, $offset = null) {
         $this->db->select('kelas.*, tahun_ajaran.tahun, guru.nama as wali_kelas_nama');
         $this->db->join('tahun_ajaran', 'tahun_ajaran.id = kelas.tahun_ajaran_id', 'left');
         $this->db->join('guru', 'guru.id = kelas.wali_kelas_id', 'left');
         $this->db->order_by('kelas.tingkat', 'ASC');
         $this->db->order_by('kelas.nama_kelas', 'ASC');
+        
+        if ($limit !== null) {
+            $this->db->limit($limit, $offset);
+        }
+        
         return $this->db->get($this->table)->result();
     }
 
@@ -46,5 +51,36 @@ class Kelas_model extends CI_Model {
         $this->db->where('kelas_id', $kelas_id);
         $this->db->where('is_active', 1);
         return $this->db->count_all_results('siswa');
+    }
+    
+    public function search($keyword, $limit = null, $offset = null) {
+        $this->db->select('kelas.*, tahun_ajaran.tahun, guru.nama as wali_kelas_nama');
+        $this->db->join('tahun_ajaran', 'tahun_ajaran.id = kelas.tahun_ajaran_id', 'left');
+        $this->db->join('guru', 'guru.id = kelas.wali_kelas_id', 'left');
+        $this->db->group_start();
+        $this->db->like('kelas.nama_kelas', $keyword);
+        $this->db->or_like('tahun_ajaran.tahun', $keyword);
+        $this->db->or_like('guru.nama', $keyword);
+        $this->db->group_end();
+        $this->db->order_by('kelas.tingkat', 'ASC');
+        $this->db->order_by('kelas.nama_kelas', 'ASC');
+        
+        if ($limit !== null) {
+            $this->db->limit($limit, $offset);
+        }
+        
+        return $this->db->get($this->table)->result();
+    }
+    
+    public function count_search($keyword) {
+        $this->db->select('kelas.*');
+        $this->db->join('tahun_ajaran', 'tahun_ajaran.id = kelas.tahun_ajaran_id', 'left');
+        $this->db->join('guru', 'guru.id = kelas.wali_kelas_id', 'left');
+        $this->db->group_start();
+        $this->db->like('kelas.nama_kelas', $keyword);
+        $this->db->or_like('tahun_ajaran.tahun', $keyword);
+        $this->db->or_like('guru.nama', $keyword);
+        $this->db->group_end();
+        return $this->db->count_all_results($this->table);
     }
 }

@@ -13,12 +13,57 @@ class Mata_pelajaran extends CI_Controller {
         }
         
         $this->load->model('Mata_pelajaran_model');
+        $this->load->library('pagination');
     }
 
     public function index() {
         $data['title'] = 'Mata Pelajaran';
         $data['active_menu'] = 'mata_pelajaran';
-        $data['mata_pelajaran'] = $this->Mata_pelajaran_model->get_all();
+        
+        // Pagination configuration
+        $config['base_url'] = base_url('admin/mata_pelajaran/index');
+        $search = $this->input->get('search');
+        $config['total_rows'] = $search ? $this->Mata_pelajaran_model->count_search($search) : $this->Mata_pelajaran_model->count_all();
+        $config['per_page'] = $this->input->get('per_page') ? $this->input->get('per_page') : 10;
+        $config['uri_segment'] = 3;
+        $config['use_page_numbers'] = TRUE;
+        $config['reuse_query_string'] = TRUE;
+        
+        // Pagination styling
+        $config['full_tag_open'] = '<nav><ul class="flex space-x-1">';
+        $config['full_tag_close'] = '</ul></nav>';
+        $config['first_link'] = 'First';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_link'] = 'Last';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        $config['next_link'] = '&raquo;';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['prev_link'] = '&laquo;';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="px-3 py-1 bg-blue-600 text-white rounded">';
+        $config['cur_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded cursor-pointer">';
+        $config['num_tag_close'] = '</li>';
+        
+        $this->pagination->initialize($config);
+        
+        $page = ($this->input->get('page')) ? $this->input->get('page') : 1;
+        $offset = ($page - 1) * $config['per_page'];
+        
+        // Search
+        if ($search) {
+            $data['mata_pelajaran'] = $this->Mata_pelajaran_model->search($search, $config['per_page'], $offset);
+        } else {
+            $data['mata_pelajaran'] = $this->Mata_pelajaran_model->get_all($config['per_page'], $offset);
+        }
+        
+        $data['pagination'] = $this->pagination->create_links();
+        $data['per_page'] = $config['per_page'];
+        $data['search'] = $search;
         
         $this->load->view('templates/admin_header', $data);
         $this->load->view('admin/mata_pelajaran/index', $data);
