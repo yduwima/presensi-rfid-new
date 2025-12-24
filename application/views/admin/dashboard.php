@@ -94,8 +94,10 @@
                         <?php foreach ($recent_absensi_siswa as $absen): ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-sm text-gray-900">
-                                    <!-- Will fetch siswa name via join -->
-                                    Siswa #<?php echo $absen->user_id; ?>
+                                    <?php echo $absen->nama ? $absen->nama : 'Unknown'; ?>
+                                    <?php if (isset($absen->nama_kelas)): ?>
+                                        <span class="text-xs text-gray-500 block"><?php echo $absen->nama_kelas; ?></span>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-600">
                                     <?php echo date('H:i', strtotime($absen->jam_masuk)); ?>
@@ -144,8 +146,7 @@
                         <?php foreach ($recent_absensi_guru as $absen): ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-sm text-gray-900">
-                                    <!-- Will fetch guru name via join -->
-                                    Guru #<?php echo $absen->user_id; ?>
+                                    <?php echo $absen->nama ? $absen->nama : 'Unknown'; ?>
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-600">
                                     <?php echo date('H:i', strtotime($absen->jam_masuk)); ?>

@@ -37,9 +37,18 @@ class Absensi_model extends CI_Model {
     }
 
     public function get_recent($user_type, $limit = 10) {
-        $this->db->where('user_type', $user_type);
-        $this->db->where('tanggal', date('Y-m-d'));
-        $this->db->order_by('jam_masuk', 'DESC');
+        if ($user_type == 'siswa') {
+            $this->db->select('absensi_harian.*, siswa.nama, kelas.nama_kelas');
+            $this->db->join('siswa', 'siswa.id = absensi_harian.user_id', 'left');
+            $this->db->join('kelas', 'kelas.id = siswa.kelas_id', 'left');
+        } else {
+            $this->db->select('absensi_harian.*, guru.nama');
+            $this->db->join('guru', 'guru.id = absensi_harian.user_id', 'left');
+        }
+        
+        $this->db->where('absensi_harian.user_type', $user_type);
+        $this->db->where('absensi_harian.tanggal', date('Y-m-d'));
+        $this->db->order_by('absensi_harian.jam_masuk', 'DESC');
         $this->db->limit($limit);
         return $this->db->get($this->table)->result();
     }
