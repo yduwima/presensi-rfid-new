@@ -93,15 +93,10 @@
                 
                 <div class="mt-4">
                     <p class="px-4 text-xs font-semibold text-gray-400 uppercase">Laporan</p>
-                    <a href="<?php echo base_url('admin/laporan_siswa'); ?>" 
-                       class="sidebar-link <?php echo ($active_menu == 'laporan_siswa') ? 'active' : ''; ?>">
-                        <i class="fas fa-file-pdf w-5"></i>
-                        <span class="ml-3">Laporan Siswa</span>
-                    </a>
-                    <a href="<?php echo base_url('admin/laporan_guru'); ?>" 
-                       class="sidebar-link <?php echo ($active_menu == 'laporan_guru') ? 'active' : ''; ?>">
-                        <i class="fas fa-file-excel w-5"></i>
-                        <span class="ml-3">Laporan Guru</span>
+                    <a href="<?php echo base_url('admin/laporan'); ?>" 
+                       class="sidebar-link <?php echo ($active_menu == 'laporan') ? 'active' : ''; ?>">
+                        <i class="fas fa-file-alt w-5"></i>
+                        <span class="ml-3">Laporan</span>
                     </a>
                 </div>
                 
