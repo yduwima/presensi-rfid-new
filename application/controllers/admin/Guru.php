@@ -82,6 +82,13 @@ class Guru extends CI_Controller {
                 return;
             }
             
+            // Check if username already exists
+            if ($this->User_model->get_by_username($nip)) {
+                $this->session->set_flashdata('error', 'Username (NIP) sudah terdaftar di sistem');
+                redirect('admin/guru');
+                return;
+            }
+            
             $data = array(
                 'nip' => $nip,
                 'nama' => $this->input->post('nama'),
@@ -94,6 +101,9 @@ class Guru extends CI_Controller {
                 'is_bk' => $this->input->post('is_bk') ? 1 : 0
             );
             
+            // Start transaction for data consistency
+            $this->db->trans_start();
+            
             if ($this->Guru_model->create($data)) {
                 // Get the inserted guru ID
                 $guru_id = $this->db->insert_id();
@@ -105,19 +115,25 @@ class Guru extends CI_Controller {
                 }
                 
                 // Create user account for the guru
+                // Default password is NIP (users should change on first login for security)
                 $user_data = array(
                     'username' => $nip,
-                    'password' => $nip, // Default password is NIP (will be hashed by User_model)
+                    'password' => $nip,
                     'role' => $role,
                     'guru_id' => $guru_id,
                     'is_active' => 1
                 );
                 
                 $this->User_model->create($user_data);
-                
-                $this->session->set_flashdata('success', 'Data guru berhasil ditambahkan. Username: ' . $nip . ', Password default: ' . $nip);
-            } else {
+            }
+            
+            // Complete transaction
+            $this->db->trans_complete();
+            
+            if ($this->db->trans_status() === FALSE) {
                 $this->session->set_flashdata('error', 'Gagal menambahkan data guru');
+            } else {
+                $this->session->set_flashdata('success', 'Data guru berhasil ditambahkan. Username: ' . $nip . ', Password default: ' . $nip . ' (Harap segera diganti)');
             }
         }
         

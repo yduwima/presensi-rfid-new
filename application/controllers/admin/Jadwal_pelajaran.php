@@ -21,6 +21,28 @@ class Jadwal_pelajaran extends CI_Controller {
         $this->load->model('Semester_model');
         $this->load->library('pagination');
     }
+    
+    /**
+     * Get active tahun ajaran and semester
+     * @return array|null Returns array with tahun_ajaran and semester objects, or null with error message
+     */
+    private function get_active_tahun_semester() {
+        $tahun_ajaran = $this->Tahun_ajaran_model->get_active();
+        $semester = $this->Semester_model->get_active();
+        
+        if (!$tahun_ajaran) {
+            return array('error' => 'Tidak ada tahun ajaran aktif. Silakan aktifkan tahun ajaran terlebih dahulu.');
+        }
+        
+        if (!$semester) {
+            return array('error' => 'Tidak ada semester aktif. Silakan aktifkan semester terlebih dahulu.');
+        }
+        
+        return array(
+            'tahun_ajaran' => $tahun_ajaran,
+            'semester' => $semester
+        );
+    }
 
     public function index() {
         $data['title'] = 'Jadwal Pelajaran';
@@ -93,17 +115,10 @@ class Jadwal_pelajaran extends CI_Controller {
     public function create() {
         if ($this->input->post()) {
             // Get active tahun ajaran and semester
-            $tahun_ajaran = $this->Tahun_ajaran_model->get_active();
-            $semester = $this->Semester_model->get_active();
+            $active_data = $this->get_active_tahun_semester();
             
-            if (!$tahun_ajaran) {
-                $this->session->set_flashdata('error', 'Tidak ada tahun ajaran aktif. Silakan aktifkan tahun ajaran terlebih dahulu.');
-                redirect('admin/jadwal_pelajaran');
-                return;
-            }
-            
-            if (!$semester) {
-                $this->session->set_flashdata('error', 'Tidak ada semester aktif. Silakan aktifkan semester terlebih dahulu.');
+            if (isset($active_data['error'])) {
+                $this->session->set_flashdata('error', $active_data['error']);
                 redirect('admin/jadwal_pelajaran');
                 return;
             }
@@ -115,8 +130,8 @@ class Jadwal_pelajaran extends CI_Controller {
                 'hari' => $this->input->post('hari'),
                 'jam_mulai' => $this->input->post('jam_mulai'),
                 'jam_selesai' => $this->input->post('jam_selesai'),
-                'tahun_ajaran_id' => $tahun_ajaran->id,
-                'semester_id' => $semester->id
+                'tahun_ajaran_id' => $active_data['tahun_ajaran']->id,
+                'semester_id' => $active_data['semester']->id
             );
             
             // Check for scheduling conflicts
@@ -144,17 +159,10 @@ class Jadwal_pelajaran extends CI_Controller {
     public function update($id) {
         if ($this->input->post()) {
             // Get active tahun ajaran and semester
-            $tahun_ajaran = $this->Tahun_ajaran_model->get_active();
-            $semester = $this->Semester_model->get_active();
+            $active_data = $this->get_active_tahun_semester();
             
-            if (!$tahun_ajaran) {
-                $this->session->set_flashdata('error', 'Tidak ada tahun ajaran aktif. Silakan aktifkan tahun ajaran terlebih dahulu.');
-                redirect('admin/jadwal_pelajaran');
-                return;
-            }
-            
-            if (!$semester) {
-                $this->session->set_flashdata('error', 'Tidak ada semester aktif. Silakan aktifkan semester terlebih dahulu.');
+            if (isset($active_data['error'])) {
+                $this->session->set_flashdata('error', $active_data['error']);
                 redirect('admin/jadwal_pelajaran');
                 return;
             }
@@ -166,8 +174,8 @@ class Jadwal_pelajaran extends CI_Controller {
                 'hari' => $this->input->post('hari'),
                 'jam_mulai' => $this->input->post('jam_mulai'),
                 'jam_selesai' => $this->input->post('jam_selesai'),
-                'tahun_ajaran_id' => $tahun_ajaran->id,
-                'semester_id' => $semester->id
+                'tahun_ajaran_id' => $active_data['tahun_ajaran']->id,
+                'semester_id' => $active_data['semester']->id
             );
             
             // Check for scheduling conflicts (excluding current schedule)
