@@ -124,9 +124,9 @@
                     <label for="tingkat" class="form-label">Tingkat <span class="text-red-500">*</span></label>
                     <select class="form-input" id="tingkat" name="tingkat" required>
                         <option value="">-- Pilih Tingkat --</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
+                        <?php for ($i = 1; $i <= 12; $i++): ?>
+                            <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                        <?php endfor; ?>
                     </select>
                 </div>
 
