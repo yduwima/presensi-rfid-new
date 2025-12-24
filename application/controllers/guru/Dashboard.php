@@ -54,13 +54,13 @@ class Dashboard extends CI_Controller {
             
             // 3. Count unique classes taught (from jadwal)
             $all_jadwal = $this->Jadwal_pelajaran_model->get_by_guru($guru->id);
-            $kelas_unique = array();
+            $kelas_ids = array();
             foreach ($all_jadwal as $jadwal) {
-                if (isset($jadwal->kelas_id) && !in_array($jadwal->kelas_id, $kelas_unique)) {
-                    $kelas_unique[] = $jadwal->kelas_id;
+                if (isset($jadwal->kelas_id)) {
+                    $kelas_ids[] = $jadwal->kelas_id;
                 }
             }
-            $data['kelas_diampu'] = count($kelas_unique);
+            $data['kelas_diampu'] = count(array_unique($kelas_ids));
         } else {
             $data['jadwal_hari_ini'] = array();
             $data['hari_ini'] = '';
