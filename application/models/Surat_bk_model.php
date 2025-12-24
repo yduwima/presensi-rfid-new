@@ -30,8 +30,8 @@ class Surat_bk_model extends CI_Model {
         $this->db->from('surat_bk');
         $this->db->join('siswa', 'siswa.id = surat_bk.siswa_id', 'left');
         $this->db->join('kelas', 'kelas.id = siswa.kelas_id', 'left');
-        $this->db->where('MONTH(surat_bk.tanggal_surat)', $bulan);
-        $this->db->where('YEAR(surat_bk.tanggal_surat)', $tahun);
+        $this->db->where('MONTH(surat_bk.tanggal_surat)', $bulan, FALSE);
+        $this->db->where('YEAR(surat_bk.tanggal_surat)', $tahun, FALSE);
         $this->db->order_by('surat_bk.created_at', 'DESC');
         
         $query = $this->db->get();
@@ -39,8 +39,8 @@ class Surat_bk_model extends CI_Model {
     }
 
     public function count_by_month($bulan, $tahun) {
-        $this->db->where('MONTH(tanggal_surat)', $bulan);
-        $this->db->where('YEAR(tanggal_surat)', $tahun);
+        $this->db->where('MONTH(tanggal_surat)', $bulan, FALSE);
+        $this->db->where('YEAR(tanggal_surat)', $tahun, FALSE);
         return $this->db->count_all_results('surat_bk');
     }
 
