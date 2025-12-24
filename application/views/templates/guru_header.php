@@ -39,6 +39,17 @@
                    class="sidebar-link <?php echo isset($active_menu) && $active_menu == 'rekap_jurnal' ? 'active' : ''; ?>">
                     <i class="fas fa-file-alt mr-3"></i>Rekap Jurnal
                 </a>
+                <?php 
+                // Check if guru is wali kelas
+                $this->load->model('Guru_model');
+                $guru = $this->Guru_model->get_by_user_id($this->session->userdata('user_id'));
+                if ($guru && $guru->is_wali_kelas):
+                ?>
+                <a href="<?php echo base_url('guru/wali_kelas'); ?>" 
+                   class="sidebar-link <?php echo isset($active_menu) && $active_menu == 'wali_kelas' ? 'active' : ''; ?>">
+                    <i class="fas fa-users-class mr-3"></i>Wali Kelas
+                </a>
+                <?php endif; ?>
                 <a href="<?php echo base_url('guru/profile'); ?>" 
                    class="sidebar-link <?php echo isset($active_menu) && $active_menu == 'profile' ? 'active' : ''; ?>">
                     <i class="fas fa-user mr-3"></i>Profile
