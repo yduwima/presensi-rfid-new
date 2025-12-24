@@ -54,8 +54,8 @@
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm text-gray-600 mb-1">Total Jadwal Minggu Ini</p>
-                <p class="text-3xl font-bold text-gray-800">-</p>
+                <p class="text-sm text-gray-600 mb-1">Total Jadwal Mengajar</p>
+                <p class="text-3xl font-bold text-gray-800"><?php echo $total_jadwal; ?></p>
             </div>
             <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                 <i class="fas fa-calendar-week text-blue-600 text-xl"></i>
@@ -67,7 +67,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-600 mb-1">Jurnal Terisi Bulan Ini</p>
-                <p class="text-3xl font-bold text-gray-800">-</p>
+                <p class="text-3xl font-bold text-gray-800"><?php echo $jurnal_bulan_ini; ?></p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                 <i class="fas fa-book text-green-600 text-xl"></i>
@@ -79,7 +79,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-600 mb-1">Kelas Diampu</p>
-                <p class="text-3xl font-bold text-gray-800">-</p>
+                <p class="text-3xl font-bold text-gray-800"><?php echo $kelas_diampu; ?></p>
             </div>
             <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
                 <i class="fas fa-users text-purple-600 text-xl"></i>
