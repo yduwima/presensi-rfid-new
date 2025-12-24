@@ -43,7 +43,7 @@ class Settings extends CI_Controller {
                 // Create uploads folder if not exists
                 $upload_path = './assets/uploads/';
                 if (!is_dir($upload_path)) {
-                    mkdir($upload_path, 0755, true);
+                    mkdir($upload_path, 0777, true);
                 }
                 
                 $config['upload_path'] = './assets/uploads/';
