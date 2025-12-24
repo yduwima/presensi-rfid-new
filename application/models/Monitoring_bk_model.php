@@ -26,7 +26,7 @@ class Monitoring_bk_model extends CI_Model {
         $this->db->join('siswa', 'siswa.id = absensi_harian.user_id', 'left');
         $this->db->join('kelas', 'kelas.id = siswa.kelas_id', 'left');
         $this->db->where('absensi_harian.user_type', 'siswa');
-        $this->db->where('absensi_harian.terlambat >', 0);
+        $this->db->where('absensi_harian.status_masuk', 'terlambat');
         $this->db->where('MONTH(absensi_harian.tanggal)', $bulan);
         $this->db->where('YEAR(absensi_harian.tanggal)', $tahun);
         $this->db->group_by('siswa.id');
@@ -56,7 +56,7 @@ class Monitoring_bk_model extends CI_Model {
         $this->db->from('absensi_harian');
         $this->db->where('user_id', $siswa_id);
         $this->db->where('user_type', 'siswa');
-        $this->db->where('terlambat >', 0);
+        $this->db->where('status_masuk', 'terlambat');
         $this->db->where('MONTH(tanggal)', $bulan);
         $this->db->where('YEAR(tanggal)', $tahun);
         $this->db->order_by('tanggal', 'DESC');

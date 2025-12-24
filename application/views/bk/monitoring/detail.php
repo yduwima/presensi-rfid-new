@@ -91,7 +91,7 @@
             <div class="border-l-4 border-yellow-500 pl-4 py-2 bg-yellow-50">
                 <p class="font-semibold"><?php echo date('d F Y', strtotime($record->tanggal)); ?></p>
                 <p class="text-sm text-gray-600">Jam Masuk: <?php echo $record->jam_masuk; ?></p>
-                <p class="text-sm text-red-600">Terlambat: <?php echo $record->terlambat; ?> menit</p>
+                <p class="text-sm text-red-600">Terlambat: <?php echo $record->menit_keterlambatan; ?> menit</p>
             </div>
             <?php endforeach; ?>
         </div>

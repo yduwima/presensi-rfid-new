@@ -26,7 +26,12 @@ class Guru_model extends CI_Model {
     }
 
     public function get_by_user_id($user_id) {
-        return $this->db->get_where($this->table, array('user_id' => $user_id))->row();
+        // Join with users table to get guru data by user_id
+        $this->db->select('guru.*');
+        $this->db->from('guru');
+        $this->db->join('users', 'users.guru_id = guru.id');
+        $this->db->where('users.id', $user_id);
+        return $this->db->get()->row();
     }
 
     public function get_wali_kelas() {
