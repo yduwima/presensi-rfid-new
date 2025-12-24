@@ -165,10 +165,54 @@ class Guru extends CI_Controller {
     }
 
     public function delete($id) {
-        if ($this->Guru_model->delete($id)) {
-            $this->session->set_flashdata('success', 'Data guru berhasil dihapus');
-        } else {
+        // Start transaction for data consistency
+        $this->db->trans_start();
+        
+        // Delete user account associated with this guru first
+        $this->User_model->delete_by_guru_id($id);
+        
+        // Then delete guru
+        $this->Guru_model->delete($id);
+        
+        // Complete transaction
+        $this->db->trans_complete();
+        
+        if ($this->db->trans_status() === FALSE) {
             $this->session->set_flashdata('error', 'Gagal menghapus data guru');
+        } else {
+            $this->session->set_flashdata('success', 'Data guru berhasil dihapus');
+        }
+        
+        redirect('admin/guru');
+    }
+    
+    public function reset_password($id) {
+        $guru = $this->Guru_model->get_by_id($id);
+        
+        if (!$guru) {
+            $this->session->set_flashdata('error', 'Data guru tidak ditemukan');
+            redirect('admin/guru');
+            return;
+        }
+        
+        // Get user by guru_id
+        $user = $this->User_model->get_by_guru_id($id);
+        
+        if (!$user) {
+            $this->session->set_flashdata('error', 'Akun user tidak ditemukan untuk guru ini');
+            redirect('admin/guru');
+            return;
+        }
+        
+        // Reset password to NIP
+        $data = array(
+            'password' => $guru->nip
+        );
+        
+        if ($this->User_model->update($user->id, $data)) {
+            $this->session->set_flashdata('success', 'Password berhasil direset ke NIP: ' . $guru->nip);
+        } else {
+            $this->session->set_flashdata('error', 'Gagal mereset password');
         }
         
         redirect('admin/guru');
