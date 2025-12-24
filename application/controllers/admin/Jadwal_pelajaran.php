@@ -21,7 +21,7 @@ class Jadwal_pelajaran extends CI_Controller {
 
     public function index() {
         $data['title'] = 'Jadwal Pelajaran';
-        $data['active_menu'] = 'jadwal';
+        $data['active_menu'] = 'jadwal_pelajaran';
         
         // Get search and pagination parameters
         $search = $this->input->get('search');

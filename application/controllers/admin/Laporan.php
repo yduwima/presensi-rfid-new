@@ -29,6 +29,7 @@ class Laporan extends CI_Controller {
     public function index()
     {
         $data['title'] = 'Laporan';
+        $data['active_menu'] = 'laporan';
         
         $this->load->view('templates/admin_header', $data);
         $this->load->view('admin/laporan/index', $data);
@@ -45,6 +46,7 @@ class Laporan extends CI_Controller {
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
         $data['kelas_id'] = $kelas_id;
+        $data['active_menu'] = 'laporan';
         
         // Get data
         $this->db->select('absensi_harian.*, siswa.nis, siswa.nama, kelas.nama_kelas');
@@ -145,6 +147,7 @@ class Laporan extends CI_Controller {
         
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
+        $data['active_menu'] = 'laporan';
         
         // Get data
         $this->db->select('absensi_harian.*, guru.nip, guru.nama');
@@ -370,6 +373,7 @@ class Laporan extends CI_Controller {
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
         $data['guru_id'] = $guru_id;
+        $data['active_menu'] = 'jurnal';
         
         // Get data
         $this->db->select('jurnal.*, guru.nama as guru_nama, mata_pelajaran.nama as mapel_nama, kelas.nama_kelas');

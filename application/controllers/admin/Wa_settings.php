@@ -42,6 +42,7 @@ class Wa_settings extends CI_Controller {
         $data['wa_notif_kelas'] = $this->db->get('wa_notif_kelas')->result();
         
         $data['title'] = 'Pengaturan WhatsApp';
+        $data['active_menu'] = 'wa_settings';
         $this->load->view('templates/admin_header', $data);
         $this->load->view('admin/wa_settings/index', $data);
         $this->load->view('templates/admin_footer');

@@ -79,12 +79,12 @@
                         <i class="fas fa-book w-5"></i>
                         <span class="ml-3">Mata Pelajaran</span>
                     </a>
-                    <a href="<?php echo base_url('admin/jadwal'); ?>" 
-                       class="sidebar-link <?php echo ($active_menu == 'jadwal') ? 'active' : ''; ?>">
+                    <a href="<?php echo base_url('admin/jadwal_pelajaran'); ?>" 
+                       class="sidebar-link <?php echo ($active_menu == 'jadwal_pelajaran') ? 'active' : ''; ?>">
                         <i class="fas fa-clock w-5"></i>
                         <span class="ml-3">Jadwal Pelajaran</span>
                     </a>
-                    <a href="<?php echo base_url('admin/jurnal'); ?>" 
+                    <a href="<?php echo base_url('admin/laporan/rekap_jurnal'); ?>" 
                        class="sidebar-link <?php echo ($active_menu == 'jurnal') ? 'active' : ''; ?>">
                         <i class="fas fa-clipboard w-5"></i>
                         <span class="ml-3">Rekap Jurnal</span>
