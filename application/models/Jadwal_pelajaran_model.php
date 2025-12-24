@@ -83,4 +83,9 @@ class Jadwal_pelajaran_model extends CI_Model {
         
         return $this->db->get($this->table)->num_rows() > 0;
     }
+    
+    public function count_by_guru($guru_id) {
+        $this->db->where('guru_id', $guru_id);
+        return $this->db->count_all_results($this->table);
+    }
 }

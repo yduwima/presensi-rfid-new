@@ -70,4 +70,17 @@ class Jurnal_model extends CI_Model {
         $this->db->where('tanggal', $tanggal);
         return $this->db->get($this->table)->num_rows() > 0;
     }
+    
+    public function get_by_guru_periode($guru_id, $bulan, $tahun) {
+        $this->db->select('jurnal.*, jadwal_pelajaran.hari, mata_pelajaran.nama as nama_mapel, kelas.nama_kelas');
+        $this->db->join('jadwal_pelajaran', 'jadwal_pelajaran.id = jurnal.jadwal_id', 'left');
+        $this->db->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mata_pelajaran_id', 'left');
+        $this->db->join('kelas', 'kelas.id = jadwal_pelajaran.kelas_id', 'left');
+        $this->db->where('jurnal.guru_id', $guru_id);
+        $this->db->where('MONTH(jurnal.tanggal)', $bulan);
+        $this->db->where('YEAR(jurnal.tanggal)', $tahun);
+        $this->db->order_by('jurnal.tanggal', 'DESC');
+        
+        return $this->db->get($this->table)->result();
+    }
 }
