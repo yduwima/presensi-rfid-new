@@ -273,7 +273,11 @@ body {
         white-space: nowrap;
     }
     
-    .table thead th,
+    .table thead th {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+    
     .table tbody td {
         padding: 0.5rem 0.75rem;
         font-size: 0.8125rem;
