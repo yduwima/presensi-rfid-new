@@ -32,32 +32,33 @@ class Whatsapp {
         // Clean phone number
         $phone = $this->_clean_phone($phone);
 
-        // Prepare data for Fonnte API (adjust based on your WA API provider)
+        // Prepare data for M-pedia/Magd API
         $data = array(
-            'target' => $phone,
-            'message' => $message,
-            'countryCode' => '62' // Indonesia
+            'api_key' => $this->api_key,
+            'sender' => $this->sender,
+            'number' => $phone,
+            'message' => $message
         );
 
-        // Send via cURL
+        // Send via cURL (M-pedia/Magd format)
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $this->api_url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
+            CURLOPT_TIMEOUT => 30,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_POSTFIELDS => http_build_query($data),
             CURLOPT_HTTPHEADER => array(
-                'Authorization: ' . $this->api_key,
-                'Content-Type: application/json'
+                'Content-Type: application/x-www-form-urlencoded'
             ),
         ));
 
         $response = curl_exec($curl);
+        $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $err = curl_error($curl);
         curl_close($curl);
 
@@ -68,11 +69,23 @@ class Whatsapp {
             );
         }
 
+        // Parse response
         $result = json_decode($response);
         
+        // M-pedia/Magd typically returns success status
+        $is_success = false;
+        if ($result) {
+            // Check various success indicators
+            $is_success = (
+                (isset($result->status) && ($result->status == 'success' || $result->status == true || $result->status == 'sent')) ||
+                (isset($result->success) && $result->success == true) ||
+                ($http_code >= 200 && $http_code < 300)
+            );
+        }
+        
         return array(
-            'success' => isset($result->status) && $result->status == true,
-            'message' => isset($result->message) ? $result->message : 'Unknown response',
+            'success' => $is_success,
+            'message' => isset($result->message) ? $result->message : 'Response received',
             'response' => $result
         );
     }
