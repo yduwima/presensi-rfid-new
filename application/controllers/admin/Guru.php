@@ -217,4 +217,75 @@ class Guru extends CI_Controller {
         $this->session->set_flashdata('success', $message);
         redirect('admin/guru');
     }
+    
+    public function export() {
+        // Get all guru data
+        $this->db->select('guru.*');
+        $this->db->from('guru');
+        $this->db->where('guru.is_active', 1);
+        $this->db->order_by('guru.nama', 'ASC');
+        
+        $guru = $this->db->get()->result();
+        
+        // Set headers for Excel download
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Data_Guru_' . date('Y-m-d') . '.xls"');
+        header('Cache-Control: max-age=0');
+        
+        // Start output
+        echo '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+        echo '<head>';
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+        echo '<style>';
+        echo 'table { border-collapse: collapse; width: 100%; }';
+        echo 'th, td { border: 1px solid #000; padding: 8px; text-align: left; }';
+        echo 'th { background-color: #10B981; color: white; font-weight: bold; }';
+        echo '.title { font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 10px; }';
+        echo '</style>';
+        echo '</head>';
+        echo '<body>';
+        
+        echo '<div class="title">DATA GURU DAN STAFF</div>';
+        echo '<div style="text-align: center; margin-bottom: 20px;">Tanggal Export: ' . date('d/m/Y H:i:s') . '</div>';
+        
+        // Table
+        echo '<table>';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th>No</th>';
+        echo '<th>NIP</th>';
+        echo '<th>Nama Guru</th>';
+        echo '<th>Jenis Kelamin</th>';
+        echo '<th>Tempat Lahir</th>';
+        echo '<th>Tanggal Lahir</th>';
+        echo '<th>Alamat</th>';
+        echo '<th>No HP</th>';
+        echo '<th>Email</th>';
+        echo '<th>RFID UID</th>';
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody>';
+        
+        $no = 1;
+        foreach($guru as $row) {
+            echo '<tr>';
+            echo '<td>' . $no++ . '</td>';
+            echo '<td>' . $row->nip . '</td>';
+            echo '<td>' . $row->nama . '</td>';
+            echo '<td>' . ($row->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan') . '</td>';
+            echo '<td>' . ($row->tempat_lahir ?: '-') . '</td>';
+            echo '<td>' . ($row->tanggal_lahir ? date('d/m/Y', strtotime($row->tanggal_lahir)) : '-') . '</td>';
+            echo '<td>' . ($row->alamat ?: '-') . '</td>';
+            echo '<td>' . ($row->telp ?: '-') . '</td>';
+            echo '<td>' . ($row->email ?: '-') . '</td>';
+            echo '<td>' . ($row->rfid_uid ?: '-') . '</td>';
+            echo '</tr>';
+        }
+        
+        echo '</tbody>';
+        echo '</table>';
+        echo '</body>';
+        echo '</html>';
+        exit;
+    }
 }

@@ -88,7 +88,8 @@ class Excel_export {
             echo '<td>' . date('d/m/Y', strtotime($row->tanggal)) . '</td>';
             echo '<td>' . ($row->jam_masuk ? $row->jam_masuk : '-') . '</td>';
             echo '<td>' . ($row->jam_pulang ? $row->jam_pulang : '-') . '</td>';
-            echo '<td>' . ($row->terlambat > 0 ? $row->terlambat . ' menit' : 'Tepat Waktu') . '</td>';
+            $keterlambatan = isset($row->menit_keterlambatan) && $row->menit_keterlambatan > 0 ? $row->menit_keterlambatan . ' menit' : 'Tepat Waktu';
+            echo '<td>' . $keterlambatan . '</td>';
             echo '</tr>';
         }
         
@@ -152,7 +153,8 @@ class Excel_export {
             echo '<td>' . date('d/m/Y', strtotime($row->tanggal)) . '</td>';
             echo '<td>' . ($row->jam_masuk ? $row->jam_masuk : '-') . '</td>';
             echo '<td>' . ($row->jam_pulang ? $row->jam_pulang : '-') . '</td>';
-            echo '<td>' . ($row->terlambat > 0 ? $row->terlambat . ' menit' : 'Tepat Waktu') . '</td>';
+            $keterlambatan = isset($row->menit_keterlambatan) && $row->menit_keterlambatan > 0 ? $row->menit_keterlambatan . ' menit' : 'Tepat Waktu';
+            echo '<td>' . $keterlambatan . '</td>';
             echo '</tr>';
         }
         

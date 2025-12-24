@@ -286,6 +286,13 @@ class Laporan extends CI_Controller {
         $tahun = $this->input->get('tahun') ?: date('Y');
         $kelas_id = $this->input->get('kelas_id');
         
+        // Get class name first if needed
+        $kelas_nama = 'Semua Kelas';
+        if ($kelas_id) {
+            $kelas = $this->db->get_where('kelas', ['id' => $kelas_id])->row();
+            $kelas_nama = $kelas ? $kelas->nama_kelas : 'Semua Kelas';
+        }
+        
         // Get data
         $this->db->select('absensi_harian.*, siswa.nis, siswa.nama, kelas.nama_kelas');
         $this->db->from('absensi_harian');
@@ -297,10 +304,6 @@ class Laporan extends CI_Controller {
         
         if ($kelas_id) {
             $this->db->where('siswa.kelas_id', $kelas_id);
-            $kelas = $this->db->get_where('kelas', ['id' => $kelas_id])->row();
-            $kelas_nama = $kelas ? $kelas->nama_kelas : 'Semua Kelas';
-        } else {
-            $kelas_nama = 'Semua Kelas';
         }
         
         $this->db->order_by('absensi_harian.tanggal', 'DESC');
