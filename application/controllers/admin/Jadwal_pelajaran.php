@@ -16,18 +16,70 @@ class Jadwal_pelajaran extends CI_Controller {
         $this->load->model('Kelas_model');
         $this->load->model('Mata_pelajaran_model');
         $this->load->model('Guru_model');
+        $this->load->library('pagination');
     }
 
     public function index() {
         $data['title'] = 'Jadwal Pelajaran';
         $data['active_menu'] = 'jadwal';
         
-        $kelas_filter = $this->input->get('kelas_id');
-        $data['jadwal'] = $this->Jadwal_pelajaran_model->get_all($kelas_filter);
+        // Get search and pagination parameters
+        $search = $this->input->get('search');
+        $per_page = $this->input->get('per_page') ? $this->input->get('per_page') : 10;
+        $page = $this->input->get('page') ? $this->input->get('page') : 1;
+        $offset = ($page - 1) * $per_page;
+        
+        // Get data with search and pagination
+        if ($search) {
+            $data['jadwal'] = $this->Jadwal_pelajaran_model->search($search, $per_page, $offset);
+            $total_rows = $this->Jadwal_pelajaran_model->count_search($search);
+        } else {
+            $data['jadwal'] = $this->Jadwal_pelajaran_model->get_all_paginated($per_page, $offset);
+            $total_rows = $this->Jadwal_pelajaran_model->count_all();
+        }
+        
+        // Pagination config
+        $config['base_url'] = base_url('admin/jadwal_pelajaran');
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = $per_page;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page';
+        $config['reuse_query_string'] = TRUE;
+        $config['num_links'] = 3;
+        
+        // Tailwind styling
+        $config['full_tag_open'] = '<div class="flex justify-center mt-6"><ul class="flex space-x-2">';
+        $config['full_tag_close'] = '</ul></div>';
+        $config['first_link'] = 'First';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_link'] = 'Last';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        $config['next_link'] = 'Next &raquo;';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['prev_link'] = '&laquo; Previous';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li><span class="px-3 py-2 bg-blue-600 text-white rounded">';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['num_tag_open'] = '<li><a href="#" class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"';
+        $config['num_tag_close'] = '</a></li>';
+        $config['attributes'] = array('class' => 'px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300');
+        
+        $this->pagination->initialize($config);
+        
+        $data['pagination'] = $this->pagination->create_links();
+        $data['total_rows'] = $total_rows;
+        $data['per_page'] = $per_page;
+        $data['page'] = $page;
+        $data['offset'] = $offset;
+        $data['search'] = $search;
+        
         $data['kelas'] = $this->Kelas_model->get_all();
         $data['mata_pelajaran'] = $this->Mata_pelajaran_model->get_all();
         $data['guru'] = $this->Guru_model->get_all();
-        $data['kelas_filter'] = $kelas_filter;
         
         $this->load->view('templates/admin_header', $data);
         $this->load->view('admin/jadwal_pelajaran/index', $data);

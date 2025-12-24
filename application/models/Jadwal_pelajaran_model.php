@@ -20,6 +20,56 @@ class Jadwal_pelajaran_model extends CI_Model {
         
         return $this->db->get($this->table)->result();
     }
+    
+    public function get_all_paginated($limit, $offset) {
+        $this->db->select('jadwal_pelajaran.*, mata_pelajaran.nama as nama_mapel, mata_pelajaran.kode as kode_mapel, kelas.nama_kelas, guru.nama as nama_guru');
+        $this->db->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mata_pelajaran_id', 'left');
+        $this->db->join('kelas', 'kelas.id = jadwal_pelajaran.kelas_id', 'left');
+        $this->db->join('guru', 'guru.id = jadwal_pelajaran.guru_id', 'left');
+        $this->db->order_by('jadwal_pelajaran.hari', 'ASC');
+        $this->db->order_by('jadwal_pelajaran.jam_mulai', 'ASC');
+        $this->db->limit($limit, $offset);
+        
+        return $this->db->get($this->table)->result();
+    }
+    
+    public function search($keyword, $limit, $offset) {
+        $this->db->select('jadwal_pelajaran.*, mata_pelajaran.nama as nama_mapel, mata_pelajaran.kode as kode_mapel, kelas.nama_kelas, guru.nama as nama_guru');
+        $this->db->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mata_pelajaran_id', 'left');
+        $this->db->join('kelas', 'kelas.id = jadwal_pelajaran.kelas_id', 'left');
+        $this->db->join('guru', 'guru.id = jadwal_pelajaran.guru_id', 'left');
+        
+        $this->db->group_start();
+        $this->db->like('mata_pelajaran.nama', $keyword);
+        $this->db->or_like('mata_pelajaran.kode', $keyword);
+        $this->db->or_like('kelas.nama_kelas', $keyword);
+        $this->db->or_like('guru.nama', $keyword);
+        $this->db->or_like('jadwal_pelajaran.hari', $keyword);
+        $this->db->group_end();
+        
+        $this->db->order_by('jadwal_pelajaran.hari', 'ASC');
+        $this->db->order_by('jadwal_pelajaran.jam_mulai', 'ASC');
+        $this->db->limit($limit, $offset);
+        
+        return $this->db->get($this->table)->result();
+    }
+    
+    public function count_search($keyword) {
+        $this->db->select('jadwal_pelajaran.id');
+        $this->db->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mata_pelajaran_id', 'left');
+        $this->db->join('kelas', 'kelas.id = jadwal_pelajaran.kelas_id', 'left');
+        $this->db->join('guru', 'guru.id = jadwal_pelajaran.guru_id', 'left');
+        
+        $this->db->group_start();
+        $this->db->like('mata_pelajaran.nama', $keyword);
+        $this->db->or_like('mata_pelajaran.kode', $keyword);
+        $this->db->or_like('kelas.nama_kelas', $keyword);
+        $this->db->or_like('guru.nama', $keyword);
+        $this->db->or_like('jadwal_pelajaran.hari', $keyword);
+        $this->db->group_end();
+        
+        return $this->db->count_all_results($this->table);
+    }
 
     public function get_by_id($id) {
         return $this->db->get_where($this->table, array('id' => $id))->row();

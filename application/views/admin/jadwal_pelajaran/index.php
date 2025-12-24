@@ -7,29 +7,35 @@
     </div>
 </div>
 
-<!-- Filter -->
+<!-- Search and Filter -->
 <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-    <form method="GET" action="<?php echo base_url('admin/jadwal_pelajaran'); ?>" class="flex items-center space-x-4">
-        <div class="flex-1">
-            <label for="kelas_id" class="block text-sm font-medium text-gray-700 mb-1">Filter Kelas</label>
-            <select name="kelas_id" id="kelas_id" class="form-input" onchange="this.form.submit()">
-                <option value="">Semua Kelas</option>
-                <?php foreach ($kelas as $k): ?>
-                    <option value="<?php echo $k->id; ?>" <?php echo $kelas_filter == $k->id ? 'selected' : ''; ?>>
-                        <?php echo $k->nama_kelas; ?>
-                    </option>
-                <?php endforeach; ?>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex items-center">
+            <label class="text-sm text-gray-700 mr-2">Show</label>
+            <select onchange="changePerPage(this.value)" class="form-input w-20">
+                <option value="10" <?php echo $per_page == 10 ? 'selected' : ''; ?>>10</option>
+                <option value="20" <?php echo $per_page == 20 ? 'selected' : ''; ?>>20</option>
+                <option value="30" <?php echo $per_page == 30 ? 'selected' : ''; ?>>30</option>
+                <option value="50" <?php echo $per_page == 50 ? 'selected' : ''; ?>>50</option>
+                <option value="100" <?php echo $per_page == 100 ? 'selected' : ''; ?>>100</option>
             </select>
+            <label class="text-sm text-gray-700 ml-2">entries</label>
         </div>
-        <?php if ($kelas_filter): ?>
-            <div class="pt-6">
-                <a href="<?php echo base_url('admin/jadwal_pelajaran'); ?>" 
-                   class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
-                    Reset Filter
-                </a>
-            </div>
-        <?php endif; ?>
-    </form>
+        
+        <div class="flex-1 max-w-md">
+            <form method="GET" action="<?php echo base_url('admin/jadwal_pelajaran'); ?>" class="flex">
+                <input type="hidden" name="per_page" value="<?php echo $per_page; ?>">
+                <input type="text" 
+                       name="search" 
+                       value="<?php echo $search; ?>" 
+                       placeholder="Cari jadwal (mapel, kelas, guru, hari)..." 
+                       class="form-input rounded-r-none flex-1">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="bg-white rounded-lg shadow-md p-6">
@@ -48,7 +54,7 @@
             </thead>
             <tbody>
                 <?php if (!empty($jadwal)): ?>
-                    <?php $no = 1; foreach ($jadwal as $j): ?>
+                    <?php $no = $offset + 1; foreach ($jadwal as $j): ?>
                         <tr>
                             <td><?php echo $no++; ?></td>
                             <td class="font-medium"><?php echo $j->hari; ?></td>
@@ -74,13 +80,29 @@
                 <?php else: ?>
                     <tr>
                         <td colspan="7" class="text-center py-8 text-gray-500">
-                            <?php echo $kelas_filter ? 'Belum ada jadwal untuk kelas ini' : 'Belum ada data jadwal pelajaran'; ?>
+                            <?php if ($search): ?>
+                                <i class="fas fa-search text-4xl mb-2"></i>
+                                <p>Tidak ada hasil untuk pencarian "<?php echo htmlspecialchars($search); ?>"</p>
+                            <?php else: ?>
+                                <i class="fas fa-calendar-alt text-4xl mb-2"></i>
+                                <p>Belum ada data jadwal pelajaran</p>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
+    
+    <!-- Pagination -->
+    <?php if ($total_rows > 0): ?>
+        <div class="mt-4 flex justify-between items-center">
+            <div class="text-sm text-gray-700">
+                Menampilkan <?php echo $offset + 1; ?> sampai <?php echo min($offset + $per_page, $total_rows); ?> dari <?php echo $total_rows; ?> data
+            </div>
+            <?php echo $pagination; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <!-- Modal -->
@@ -167,6 +189,13 @@
 </div>
 
 <script>
+    function changePerPage(value) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', value);
+        url.searchParams.set('page', 1); // Reset to page 1
+        window.location.href = url.toString();
+    }
+
     function openModal(mode) {
         const modal = document.getElementById('jadwalModal');
         const form = document.getElementById('jadwalForm');
@@ -203,6 +232,10 @@
         document.getElementById('jam_selesai').value = data.jam_selesai;
         
         modal.classList.remove('hidden');
+    }
+    
+    function confirmDelete() {
+        return confirm('Apakah Anda yakin ingin menghapus jadwal ini?');
     }
 
     document.getElementById('jadwalModal').addEventListener('click', function(e) {
