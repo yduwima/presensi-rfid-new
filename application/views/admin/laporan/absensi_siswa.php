@@ -42,11 +42,15 @@
                 </button>
             </div>
         </form>
-        <div class="mt-4">
+        <div class="mt-4 flex gap-2">
             <a href="<?= base_url('admin/laporan/pdf_absensi_siswa?' . http_build_query(['bulan' => $bulan, 'tahun' => $tahun, 'kelas_id' => $kelas_id])) ?>" 
                target="_blank"
                class="inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200">
                 <i class="fas fa-file-pdf mr-2"></i>Cetak PDF
+            </a>
+            <a href="<?= base_url('admin/laporan/excel_absensi_siswa?' . http_build_query(['bulan' => $bulan, 'tahun' => $tahun, 'kelas_id' => $kelas_id])) ?>" 
+               class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                <i class="fas fa-file-excel mr-2"></i>Export Excel
             </a>
         </div>
     </div>
