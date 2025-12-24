@@ -57,9 +57,8 @@ class Cron extends CI_Controller {
         $today = date('Y-m-d');
         $sent_count = 0;
         
-        // Get all active students
-        $this->db->where('is_active', 1);
-        $siswa_list = $this->db->get('siswa')->result();
+        // Get all active students using model
+        $siswa_list = $this->Siswa_model->get_all();
         
         foreach ($siswa_list as $siswa) {
             // Check if student has checked in today
@@ -106,7 +105,7 @@ class Cron extends CI_Controller {
      * Check if request is from localhost
      */
     private function _is_localhost() {
-        $allowed_ips = array('127.0.0.1', '::1', 'localhost');
+        $allowed_ips = array('127.0.0.1', '::1');
         return in_array($_SERVER['REMOTE_ADDR'], $allowed_ips);
     }
 }

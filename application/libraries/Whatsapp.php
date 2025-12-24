@@ -72,15 +72,16 @@ class Whatsapp {
         // Parse response
         $result = json_decode($response);
         
-        // M-pedia/Magd typically returns success status
+        // M-pedia/Magd success detection
+        // Typically returns: {"status": "success"} or {"success": true}
         $is_success = false;
-        if ($result) {
-            // Check various success indicators
-            $is_success = (
-                (isset($result->status) && ($result->status == 'success' || $result->status == true || $result->status == 'sent')) ||
-                (isset($result->success) && $result->success == true) ||
-                ($http_code >= 200 && $http_code < 300)
-            );
+        if ($result && isset($result->status)) {
+            $is_success = (strtolower($result->status) == 'success' || $result->status === true);
+        } elseif ($result && isset($result->success)) {
+            $is_success = ($result->success === true);
+        } elseif ($http_code >= 200 && $http_code < 300) {
+            // Fallback: HTTP 2xx considered successful
+            $is_success = true;
         }
         
         return array(
