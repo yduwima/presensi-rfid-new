@@ -72,7 +72,13 @@ class Jadwal_pelajaran_model extends CI_Model {
     }
 
     public function get_by_id($id) {
-        return $this->db->get_where($this->table, array('id' => $id))->row();
+        $this->db->select('jadwal_pelajaran.*, mata_pelajaran.nama as nama_mapel, kelas.nama_kelas, guru.nama as nama_guru');
+        $this->db->from($this->table);
+        $this->db->join('mata_pelajaran', 'mata_pelajaran.id = jadwal_pelajaran.mata_pelajaran_id', 'left');
+        $this->db->join('kelas', 'kelas.id = jadwal_pelajaran.kelas_id', 'left');
+        $this->db->join('guru', 'guru.id = jadwal_pelajaran.guru_id', 'left');
+        $this->db->where('jadwal_pelajaran.id', $id);
+        return $this->db->get()->row();
     }
 
     public function get_by_guru($guru_id) {
