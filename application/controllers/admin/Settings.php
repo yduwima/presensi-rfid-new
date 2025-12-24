@@ -58,10 +58,20 @@ class Settings extends CI_Controller {
                 }
             }
             
-            if ($this->Settings_model->update($settings->id, $data)) {
-                $this->session->set_flashdata('success', 'Pengaturan berhasil diupdate');
+            if ($settings) {
+                // Update existing settings
+                if ($this->Settings_model->update($settings->id, $data)) {
+                    $this->session->set_flashdata('success', 'Pengaturan berhasil diupdate');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal mengupdate pengaturan');
+                }
             } else {
-                $this->session->set_flashdata('error', 'Gagal mengupdate pengaturan');
+                // Insert new settings
+                if ($this->Settings_model->create($data)) {
+                    $this->session->set_flashdata('success', 'Pengaturan berhasil disimpan');
+                } else {
+                    $this->session->set_flashdata('error', 'Gagal menyimpan pengaturan');
+                }
             }
         }
         

@@ -105,9 +105,9 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <?php if ($row->terlambat > 0): ?>
+                                    <?php if (isset($row->menit_keterlambatan) && $row->menit_keterlambatan > 0): ?>
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                            Terlambat <?php echo $row->terlambat; ?> menit
+                                            Terlambat <?php echo $row->menit_keterlambatan; ?> menit
                                         </span>
                                     <?php else: ?>
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">

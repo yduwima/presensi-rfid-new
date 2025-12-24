@@ -13,6 +13,7 @@ class Guru extends CI_Controller {
         }
         
         $this->load->model('Guru_model');
+        $this->load->model('User_model');
         $this->load->library('pagination');
     }
 
@@ -72,8 +73,24 @@ class Guru extends CI_Controller {
 
     public function create() {
         if ($this->input->post()) {
+            $nip = $this->input->post('nip');
+            
+            // Check if NIP already exists
+            if ($this->Guru_model->get_by_nip($nip)) {
+                $this->session->set_flashdata('error', 'NIP sudah terdaftar');
+                redirect('admin/guru');
+                return;
+            }
+            
+            // Check if username already exists
+            if ($this->User_model->get_by_username($nip)) {
+                $this->session->set_flashdata('error', 'Username (NIP) sudah terdaftar di sistem');
+                redirect('admin/guru');
+                return;
+            }
+            
             $data = array(
-                'nip' => $this->input->post('nip'),
+                'nip' => $nip,
                 'nama' => $this->input->post('nama'),
                 'email' => $this->input->post('email'),
                 'telp' => $this->input->post('telp'),
@@ -84,10 +101,39 @@ class Guru extends CI_Controller {
                 'is_bk' => $this->input->post('is_bk') ? 1 : 0
             );
             
+            // Start transaction for data consistency
+            $this->db->trans_start();
+            
             if ($this->Guru_model->create($data)) {
-                $this->session->set_flashdata('success', 'Data guru berhasil ditambahkan');
-            } else {
+                // Get the inserted guru ID
+                $guru_id = $this->db->insert_id();
+                
+                // Determine user role based on guru flags
+                $role = 'guru';
+                if ($this->input->post('is_bk')) {
+                    $role = 'bk';
+                }
+                
+                // Create user account for the guru
+                // Default password is NIP (users should change on first login for security)
+                $user_data = array(
+                    'username' => $nip,
+                    'password' => $nip,
+                    'role' => $role,
+                    'guru_id' => $guru_id,
+                    'is_active' => 1
+                );
+                
+                $this->User_model->create($user_data);
+            }
+            
+            // Complete transaction
+            $this->db->trans_complete();
+            
+            if ($this->db->trans_status() === FALSE) {
                 $this->session->set_flashdata('error', 'Gagal menambahkan data guru');
+            } else {
+                $this->session->set_flashdata('success', 'Data guru berhasil ditambahkan. Username: ' . $nip . ', Password default: ' . $nip . ' (Harap segera diganti)');
             }
         }
         
