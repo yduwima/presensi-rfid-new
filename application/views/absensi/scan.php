@@ -17,66 +17,71 @@
             <p class="text-white text-sm" id="current-date"></p>
         </div>
 
-        <!-- Scan Area -->
-        <div class="max-w-2xl mx-auto mb-8">
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
-                <div class="text-center mb-6">
-                    <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                        <i class="fas fa-id-card text-blue-600 text-6xl"></i>
+        <!-- Main Content: Left Icon, Right Data -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <!-- Left Side: Tapping Icon -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-2xl p-8 h-full">
+                    <div class="text-center">
+                        <div class="w-40 h-40 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                            <i class="fas fa-id-card text-blue-600 text-7xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-3">Tempelkan Kartu RFID</h2>
+                        <p class="text-gray-600 mb-8">Sistem akan otomatis mendeteksi kartu Anda</p>
+
+                        <!-- Manual Input for Testing -->
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Manual Input (Testing):
+                            </label>
+                            <div class="flex flex-col gap-2">
+                                <input type="text" id="rfid-input" 
+                                    class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Masukkan RFID UID..."
+                                    autofocus>
+                                <button onclick="processRFID()" 
+                                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    <i class="fas fa-check mr-2"></i>Scan
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Result Message -->
+                        <div id="scan-result" class="mt-6 hidden"></div>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Tempelkan Kartu RFID</h2>
-                    <p class="text-gray-600">Sistem akan otomatis mendeteksi kartu Anda</p>
-                </div>
-
-                <!-- Manual Input for Testing -->
-                <div class="mt-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Manual Input (Testing):
-                    </label>
-                    <div class="flex gap-2">
-                        <input type="text" id="rfid-input" 
-                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Masukkan RFID UID..."
-                            autofocus>
-                        <button onclick="processRFID()" 
-                            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-check mr-2"></i>Scan
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Result Message -->
-                <div id="scan-result" class="mt-6 hidden"></div>
-            </div>
-        </div>
-
-        <!-- Recent Attendance -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Siswa -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">
-                        <i class="fas fa-user-graduate text-blue-600 mr-2"></i>
-                        Absensi Siswa Hari Ini
-                    </h3>
-                    <span class="badge badge-info" id="siswa-count">0</span>
-                </div>
-                <div id="siswa-list" class="space-y-2 max-h-96 overflow-y-auto">
-                    <p class="text-center text-gray-500 py-8">Belum ada data</p>
                 </div>
             </div>
 
-            <!-- Guru -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">
-                        <i class="fas fa-chalkboard-teacher text-green-600 mr-2"></i>
-                        Absensi Guru Hari Ini
-                    </h3>
-                    <span class="badge badge-success" id="guru-count">0</span>
-                </div>
-                <div id="guru-list" class="space-y-2 max-h-96 overflow-y-auto">
-                    <p class="text-center text-gray-500 py-8">Belum ada data</p>
+            <!-- Right Side: Real-time Data -->
+            <div class="lg:col-span-3">
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Siswa -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">
+                                <i class="fas fa-user-graduate text-blue-600 mr-2"></i>
+                                Absensi Siswa Hari Ini
+                            </h3>
+                            <span class="badge badge-info" id="siswa-count">0</span>
+                        </div>
+                        <div id="siswa-list" class="space-y-2 max-h-80 overflow-y-auto">
+                            <p class="text-center text-gray-500 py-8">Belum ada data</p>
+                        </div>
+                    </div>
+
+                    <!-- Guru -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">
+                                <i class="fas fa-chalkboard-teacher text-green-600 mr-2"></i>
+                                Absensi Guru Hari Ini
+                            </h3>
+                            <span class="badge badge-success" id="guru-count">0</span>
+                        </div>
+                        <div id="guru-list" class="space-y-2 max-h-80 overflow-y-auto">
+                            <p class="text-center text-gray-500 py-8">Belum ada data</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
