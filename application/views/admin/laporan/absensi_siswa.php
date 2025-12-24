@@ -96,9 +96,9 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row->jam_masuk ?: '-' ?></td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row->jam_pulang ?: '-' ?></td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <?php if($row->terlambat > 0): ?>
+                            <?php if(isset($row->menit_keterlambatan) && $row->menit_keterlambatan > 0): ?>
                             <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
-                                Terlambat <?= $row->terlambat ?> menit
+                                Terlambat <?= $row->menit_keterlambatan ?> menit
                             </span>
                             <?php else: ?>
                             <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
