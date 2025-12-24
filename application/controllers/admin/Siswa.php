@@ -227,4 +227,84 @@ class Siswa extends CI_Controller {
         $this->session->set_flashdata('success', $message);
         redirect('admin/siswa');
     }
+    
+    public function export() {
+        // Get all siswa data with kelas info
+        $this->db->select('siswa.*, kelas.nama_kelas, tahun_ajaran.tahun');
+        $this->db->from('siswa');
+        $this->db->join('kelas', 'kelas.id = siswa.kelas_id', 'left');
+        $this->db->join('tahun_ajaran', 'tahun_ajaran.id = kelas.tahun_ajaran_id', 'left');
+        $this->db->where('siswa.is_active', 1);
+        $this->db->order_by('kelas.nama_kelas', 'ASC');
+        $this->db->order_by('siswa.nama', 'ASC');
+        
+        $siswa = $this->db->get()->result();
+        
+        // Set headers for Excel download
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Data_Siswa_' . date('Y-m-d') . '.xls"');
+        header('Cache-Control: max-age=0');
+        
+        // Start output
+        echo '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+        echo '<head>';
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+        echo '<style>';
+        echo 'table { border-collapse: collapse; width: 100%; }';
+        echo 'th, td { border: 1px solid #000; padding: 8px; text-align: left; }';
+        echo 'th { background-color: #4F46E5; color: white; font-weight: bold; }';
+        echo '.title { font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 10px; }';
+        echo '</style>';
+        echo '</head>';
+        echo '<body>';
+        
+        echo '<div class="title">DATA SISWA</div>';
+        echo '<div style="text-align: center; margin-bottom: 20px;">Tanggal Export: ' . date('d/m/Y H:i:s') . '</div>';
+        
+        // Table
+        echo '<table>';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th>No</th>';
+        echo '<th>NIS</th>';
+        echo '<th>NISN</th>';
+        echo '<th>Nama Siswa</th>';
+        echo '<th>Kelas</th>';
+        echo '<th>Jenis Kelamin</th>';
+        echo '<th>Tempat Lahir</th>';
+        echo '<th>Tanggal Lahir</th>';
+        echo '<th>Alamat</th>';
+        echo '<th>No HP Siswa</th>';
+        echo '<th>Nama Orang Tua</th>';
+        echo '<th>No HP Orang Tua</th>';
+        echo '<th>RFID UID</th>';
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody>';
+        
+        $no = 1;
+        foreach($siswa as $row) {
+            echo '<tr>';
+            echo '<td>' . $no++ . '</td>';
+            echo '<td>' . $row->nis . '</td>';
+            echo '<td>' . ($row->nisn ?: '-') . '</td>';
+            echo '<td>' . $row->nama . '</td>';
+            echo '<td>' . ($row->nama_kelas ?: '-') . '</td>';
+            echo '<td>' . ($row->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan') . '</td>';
+            echo '<td>' . ($row->tempat_lahir ?: '-') . '</td>';
+            echo '<td>' . ($row->tanggal_lahir ? date('d/m/Y', strtotime($row->tanggal_lahir)) : '-') . '</td>';
+            echo '<td>' . ($row->alamat ?: '-') . '</td>';
+            echo '<td>' . ($row->telp_siswa ?: '-') . '</td>';
+            echo '<td>' . ($row->nama_ortu ?: '-') . '</td>';
+            echo '<td>' . ($row->telp_ortu ?: '-') . '</td>';
+            echo '<td>' . ($row->rfid_uid ?: '-') . '</td>';
+            echo '</tr>';
+        }
+        
+        echo '</tbody>';
+        echo '</table>';
+        echo '</body>';
+        echo '</html>';
+        exit;
+    }
 }

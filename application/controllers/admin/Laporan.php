@@ -29,6 +29,7 @@ class Laporan extends CI_Controller {
     public function index()
     {
         $data['title'] = 'Laporan';
+        $data['active_menu'] = 'laporan';
         
         $this->load->view('templates/admin_header', $data);
         $this->load->view('admin/laporan/index', $data);
@@ -45,6 +46,7 @@ class Laporan extends CI_Controller {
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
         $data['kelas_id'] = $kelas_id;
+        $data['active_menu'] = 'laporan';
         
         // Get data
         $this->db->select('absensi_harian.*, siswa.nis, siswa.nama, kelas.nama_kelas');
@@ -145,6 +147,7 @@ class Laporan extends CI_Controller {
         
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
+        $data['active_menu'] = 'laporan';
         
         // Get data
         $this->db->select('absensi_harian.*, guru.nip, guru.nama');
@@ -283,6 +286,13 @@ class Laporan extends CI_Controller {
         $tahun = $this->input->get('tahun') ?: date('Y');
         $kelas_id = $this->input->get('kelas_id');
         
+        // Get class name first if needed
+        $kelas_nama = 'Semua Kelas';
+        if ($kelas_id) {
+            $kelas = $this->db->get_where('kelas', ['id' => $kelas_id])->row();
+            $kelas_nama = $kelas ? $kelas->nama_kelas : 'Semua Kelas';
+        }
+        
         // Get data
         $this->db->select('absensi_harian.*, siswa.nis, siswa.nama, kelas.nama_kelas');
         $this->db->from('absensi_harian');
@@ -294,10 +304,6 @@ class Laporan extends CI_Controller {
         
         if ($kelas_id) {
             $this->db->where('siswa.kelas_id', $kelas_id);
-            $kelas = $this->db->get_where('kelas', ['id' => $kelas_id])->row();
-            $kelas_nama = $kelas ? $kelas->nama_kelas : 'Semua Kelas';
-        } else {
-            $kelas_nama = 'Semua Kelas';
         }
         
         $this->db->order_by('absensi_harian.tanggal', 'DESC');
@@ -370,6 +376,7 @@ class Laporan extends CI_Controller {
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
         $data['guru_id'] = $guru_id;
+        $data['active_menu'] = 'jurnal';
         
         // Get data
         $this->db->select('jurnal.*, guru.nama as guru_nama, mata_pelajaran.nama as mapel_nama, kelas.nama_kelas');

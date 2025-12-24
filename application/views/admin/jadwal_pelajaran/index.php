@@ -153,13 +153,13 @@
                     <label for="hari" class="form-label">Hari <span class="text-red-500">*</span></label>
                     <select class="form-input" id="hari" name="hari" required>
                         <option value="">-- Pilih Hari --</option>
-                        <option value="Senin">Senin</option>
-                        <option value="Selasa">Selasa</option>
-                        <option value="Rabu">Rabu</option>
-                        <option value="Kamis">Kamis</option>
-                        <option value="Jumat">Jumat</option>
-                        <option value="Sabtu">Sabtu</option>
+                        <?php foreach ($hari_kerja as $hk): ?>
+                            <option value="<?php echo $hk->hari; ?>"><?php echo $hk->hari; ?></option>
+                        <?php endforeach; ?>
                     </select>
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-info-circle"></i> Hanya menampilkan hari kerja yang aktif
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-4">

@@ -16,12 +16,13 @@ class Jadwal_pelajaran extends CI_Controller {
         $this->load->model('Kelas_model');
         $this->load->model('Mata_pelajaran_model');
         $this->load->model('Guru_model');
+        $this->load->model('Hari_kerja_model');
         $this->load->library('pagination');
     }
 
     public function index() {
         $data['title'] = 'Jadwal Pelajaran';
-        $data['active_menu'] = 'jadwal';
+        $data['active_menu'] = 'jadwal_pelajaran';
         
         // Get search and pagination parameters
         $search = $this->input->get('search');
@@ -80,6 +81,7 @@ class Jadwal_pelajaran extends CI_Controller {
         $data['kelas'] = $this->Kelas_model->get_all();
         $data['mata_pelajaran'] = $this->Mata_pelajaran_model->get_all();
         $data['guru'] = $this->Guru_model->get_all();
+        $data['hari_kerja'] = $this->Hari_kerja_model->get_active_days();
         
         $this->load->view('templates/admin_header', $data);
         $this->load->view('admin/jadwal_pelajaran/index', $data);

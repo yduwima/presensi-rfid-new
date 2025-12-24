@@ -12,7 +12,7 @@ class Naik_kelas extends CI_Controller {
         }
         
         // Check if user is admin
-        if ($this->session->userdata('role') != 'Admin') {
+        if ($this->session->userdata('role') != 'admin') {
             redirect('auth/login');
         }
         

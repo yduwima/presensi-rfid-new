@@ -12,7 +12,16 @@
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-white mb-2">ABSENSI RFID</h1>
+            <?php if (isset($settings) && $settings && $settings->logo && file_exists('./assets/uploads/' . $settings->logo)): ?>
+                <div class="mb-4 flex justify-center">
+                    <img src="<?php echo base_url('assets/uploads/' . $settings->logo); ?>" 
+                         alt="Logo Sekolah" 
+                         class="h-20 object-contain bg-white rounded-lg p-2 shadow-lg">
+                </div>
+            <?php endif; ?>
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <?php echo (isset($settings) && $settings && $settings->nama_sekolah) ? strtoupper($settings->nama_sekolah) : 'ABSENSI RFID'; ?>
+            </h1>
             <p class="text-white text-lg" id="current-time"></p>
             <p class="text-white text-sm" id="current-date"></p>
         </div>
