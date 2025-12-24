@@ -56,12 +56,12 @@
                                                             <?= $j->jam_mulai ?> - <?= $j->jam_selesai ?>
                                                         </span>
                                                         <span class="text-sm font-semibold text-gray-900">
-                                                            <?= $j->mata_pelajaran ?>
+                                                            <?= $j->nama_mapel ?>
                                                         </span>
                                                     </div>
                                                     <div class="text-sm text-gray-600 mt-1">
                                                         <i class="fas fa-users text-gray-400"></i>
-                                                        Kelas <?= $j->kelas ?>
+                                                        Kelas <?= $j->nama_kelas ?>
                                                     </div>
                                                 </div>
                                                 <div>
