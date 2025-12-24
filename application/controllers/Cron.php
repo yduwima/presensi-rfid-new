@@ -105,6 +105,9 @@ class Cron extends CI_Controller {
      * Check if request is from localhost
      */
     private function _is_localhost() {
+        if (!isset($_SERVER['REMOTE_ADDR'])) {
+            return false; // Not a web request
+        }
         $allowed_ips = array('127.0.0.1', '::1');
         return in_array($_SERVER['REMOTE_ADDR'], $allowed_ips);
     }

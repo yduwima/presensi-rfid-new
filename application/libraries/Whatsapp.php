@@ -76,9 +76,14 @@ class Whatsapp {
         // Typically returns: {"status": "success"} or {"success": true}
         $is_success = false;
         if ($result && isset($result->status)) {
-            $is_success = (strtolower($result->status) == 'success' || $result->status === true);
-        } elseif ($result && isset($result->success)) {
-            $is_success = ($result->success === true);
+            // Check if status is boolean true or string "success"
+            if ($result->status === true) {
+                $is_success = true;
+            } elseif (is_string($result->status) && strtolower($result->status) == 'success') {
+                $is_success = true;
+            }
+        } elseif ($result && isset($result->success) && $result->success === true) {
+            $is_success = true;
         } elseif ($http_code >= 200 && $http_code < 300) {
             // Fallback: HTTP 2xx considered successful
             $is_success = true;
