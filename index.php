@@ -91,6 +91,16 @@ switch (ENVIRONMENT)
 
 /*
  *---------------------------------------------------------------
+ * SET TIMEZONE TO JAKARTA (WIB)
+ *---------------------------------------------------------------
+ *
+ * Set default timezone to Asia/Jakarta (Western Indonesia Time/WIB)
+ * for all date/time operations in the application.
+ */
+	date_default_timezone_set('Asia/Jakarta');
+
+/*
+ *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
  *---------------------------------------------------------------
  *
