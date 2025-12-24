@@ -39,8 +39,8 @@ class Surat_bk_model extends CI_Model {
     }
 
     public function count_by_month($bulan, $tahun) {
-        $this->db->where('MONTH(tanggal_surat)', $bulan);
-        $this->db->where('YEAR(tanggal_surat)', $tahun);
+        $this->db->where('MONTH(surat_bk.tanggal_surat)', $bulan);
+        $this->db->where('YEAR(surat_bk.tanggal_surat)', $tahun);
         return $this->db->count_all_results('surat_bk');
     }
 
