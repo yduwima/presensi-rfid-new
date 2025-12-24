@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Rekap extends CI_Controller {
+class Rekap_jurnal extends CI_Controller {
 
     public function __construct()
     {
@@ -50,6 +50,7 @@ class Rekap extends CI_Controller {
         $data['total_pertemuan'] = $this->Jadwal_pelajaran_model->count_by_guru($guru->id) * 4; // Assume 4 weeks per month
         
         $data['title'] = 'Rekap Jurnal Mengajar';
+        $data['active_menu'] = 'rekap_jurnal';
         $this->load->view('templates/guru_header', $data);
         $this->load->view('guru/rekap/index', $data);
         $this->load->view('templates/guru_footer');
@@ -71,7 +72,7 @@ class Rekap extends CI_Controller {
         
         if (!$data['jurnal'] || $data['jurnal']->guru_id != $guru->id) {
             $this->session->set_flashdata('error', 'Jurnal tidak ditemukan');
-            redirect('guru/rekap');
+            redirect('guru/rekap_jurnal');
         }
         
         // Get attendance records for this journal
@@ -87,6 +88,7 @@ class Rekap extends CI_Controller {
         $data['stats'] = $stats;
         
         $data['title'] = 'Detail Jurnal';
+        $data['active_menu'] = 'rekap_jurnal';
         $this->load->view('templates/guru_header', $data);
         $this->load->view('guru/rekap/detail', $data);
         $this->load->view('templates/guru_footer');
