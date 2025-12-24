@@ -165,6 +165,12 @@ class Guru extends CI_Controller {
     }
 
     public function delete($id) {
+        // Validate input
+        if (!is_numeric($id)) {
+            show_error('Invalid ID', 400, 'Bad Request');
+            return;
+        }
+        
         // Start transaction for data consistency
         $this->db->trans_start();
         
@@ -187,6 +193,18 @@ class Guru extends CI_Controller {
     }
     
     public function reset_password($id) {
+        // Validate input
+        if (!is_numeric($id)) {
+            show_error('Invalid ID', 400, 'Bad Request');
+            return;
+        }
+        
+        // Verify authorization - only admin can reset passwords
+        if ($this->session->userdata('role') != 'admin') {
+            show_error('Akses ditolak', 403, 'Forbidden');
+            return;
+        }
+        
         $guru = $this->Guru_model->get_by_id($id);
         
         if (!$guru) {
@@ -204,13 +222,14 @@ class Guru extends CI_Controller {
             return;
         }
         
-        // Reset password to NIP
+        // Reset password to NIP (as per requirement)
+        // Note: User should change this on first login for security
         $data = array(
             'password' => $guru->nip
         );
         
         if ($this->User_model->update($user->id, $data)) {
-            $this->session->set_flashdata('success', 'Password berhasil direset ke NIP: ' . $guru->nip);
+            $this->session->set_flashdata('success', 'Password berhasil direset ke NIP: ' . $guru->nip . '. Harap instruksikan guru untuk segera mengubah password.');
         } else {
             $this->session->set_flashdata('error', 'Gagal mereset password');
         }
