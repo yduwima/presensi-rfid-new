@@ -25,6 +25,10 @@ class Guru_model extends CI_Model {
         return $this->db->get_where($this->table, array('rfid_uid' => $rfid_uid))->row();
     }
 
+    public function get_by_user_id($user_id) {
+        return $this->db->get_where($this->table, array('user_id' => $user_id))->row();
+    }
+
     public function get_wali_kelas() {
         $this->db->where('is_wali_kelas', 1);
         return $this->db->get($this->table)->result();
