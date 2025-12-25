@@ -17,6 +17,7 @@ class Wali_kelas extends CI_Controller {
             redirect('auth/login');
         }
         
+        $this->load->helper('text');
         $this->load->library('form_validation');
         $this->load->model('Guru_model');
         $this->load->model('Siswa_model');

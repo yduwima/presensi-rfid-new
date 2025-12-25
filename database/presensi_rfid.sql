@@ -173,7 +173,7 @@ CREATE TABLE `jadwal_pelajaran` (
   `kelas_id` int(11) NOT NULL,
   `mata_pelajaran_id` int(11) NOT NULL,
   `guru_id` int(11) NOT NULL,
-  `hari` enum('Senin','Selasa','Rabu','Kamis','Jumat','Sabtu') NOT NULL,
+  `hari` enum('Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu') NOT NULL,
   `jam_mulai` time NOT NULL,
   `jam_selesai` time NOT NULL,
   `tahun_ajaran_id` int(11) NOT NULL,

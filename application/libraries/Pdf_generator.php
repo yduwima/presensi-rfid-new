@@ -28,11 +28,31 @@ class Pdf_generator {
     }
     
     /**
+     * Alias for create() method - adds page automatically
+     * Used by BK Surat controller
+     * Note: Unlike create(), this method adds a page before returning the PDF instance
+     */
+    public function create_pdf($orientation = 'P', $unit = 'mm', $size = 'A4')
+    {
+        $this->create($orientation, $unit, $size);
+        $this->pdf->AddPage();
+        return $this->pdf;
+    }
+    
+    /**
      * Get PDF instance
      */
     public function get_instance()
     {
         return $this->pdf;
+    }
+    
+    /**
+     * Alias for get_instance() method
+     */
+    public function get_pdf()
+    {
+        return $this->get_instance();
     }
     
     /**
