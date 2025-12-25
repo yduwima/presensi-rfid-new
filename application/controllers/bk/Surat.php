@@ -25,6 +25,7 @@ class Surat extends CI_Controller {
         $this->load->model('Siswa_model');
         $this->load->model('Settings_model');
         $this->load->library('Pdf_generator');
+        $this->load->library('form_validation');
     }
 
     public function index() {
