@@ -17,6 +17,7 @@ class Wali_kelas extends CI_Controller {
             redirect('auth/login');
         }
         
+        $this->load->library('form_validation');
         $this->load->model('Guru_model');
         $this->load->model('Siswa_model');
         $this->load->model('Izin_siswa_model');
@@ -93,9 +94,7 @@ class Wali_kelas extends CI_Controller {
             'tanggal_mulai' => $this->input->post('tanggal_mulai'),
             'tanggal_selesai' => $this->input->post('tanggal_selesai'),
             'keterangan' => $this->input->post('keterangan'),
-            'bukti_file' => '',
-            'status' => 'disetujui', // Auto approve by wali kelas
-            'created_at' => date('Y-m-d H:i:s')
+            'surat' => ''
         ];
         
         // Handle file upload if any
@@ -113,7 +112,7 @@ class Wali_kelas extends CI_Controller {
             
             if ($this->upload->do_upload('bukti_file')) {
                 $upload_data = $this->upload->data();
-                $data['bukti_file'] = $upload_data['file_name'];
+                $data['surat'] = $upload_data['file_name'];
             }
         }
         

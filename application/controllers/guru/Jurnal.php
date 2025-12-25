@@ -85,7 +85,7 @@ class Jurnal extends CI_Controller {
                 'guru_id' => $guru->id,
                 'tanggal' => $tanggal,
                 'materi' => $this->input->post('materi'),
-                'keterangan' => $this->input->post('keterangan')
+                'catatan' => $this->input->post('keterangan')
             );
             
             $this->db->trans_start();
@@ -99,15 +99,20 @@ class Jurnal extends CI_Controller {
                 
                 if ($siswa_ids && $statuses) {
                     $absensi_batch = array();
-                    foreach ($siswa_ids as $key => $siswa_id) {
-                        $absensi_batch[] = array(
-                            'jurnal_id' => $jurnal_id,
-                            'siswa_id' => $siswa_id,
-                            'status' => $statuses[$key]
-                        );
+                    foreach ($siswa_ids as $siswa_id) {
+                        // Check if status exists for this student
+                        if (isset($statuses[$siswa_id])) {
+                            $absensi_batch[] = array(
+                                'jurnal_id' => $jurnal_id,
+                                'siswa_id' => $siswa_id,
+                                'status' => $statuses[$siswa_id]
+                            );
+                        }
                     }
                     
-                    $this->Absensi_mapel_model->create_batch($absensi_batch);
+                    if (!empty($absensi_batch)) {
+                        $this->Absensi_mapel_model->create_batch($absensi_batch);
+                    }
                 }
             }
             
