@@ -85,7 +85,7 @@ class Jurnal extends CI_Controller {
                 'guru_id' => $guru->id,
                 'tanggal' => $tanggal,
                 'materi' => $this->input->post('materi'),
-                'keterangan' => $this->input->post('keterangan')
+                'catatan' => $this->input->post('keterangan')
             );
             
             $this->db->trans_start();
