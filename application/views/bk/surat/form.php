@@ -31,39 +31,44 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Hari *</label>
                 <input type="text" name="hari" class="w-full border border-gray-300 rounded px-4 py-2" 
-                    value="<?php echo isset($surat) ? $surat->hari : ''; ?>" placeholder="Senin" required>
+                    value="<?php 
+                    if (isset($surat)) {
+                        $days = array('Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu');
+                        echo $days[date('l', strtotime($surat->waktu_panggilan))];
+                    }
+                    ?>" placeholder="Senin" required>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal *</label>
                 <input type="date" name="tanggal" class="w-full border border-gray-300 rounded px-4 py-2" 
-                    value="<?php echo isset($surat) ? $surat->tanggal : date('Y-m-d'); ?>" required>
+                    value="<?php echo isset($surat) ? date('Y-m-d', strtotime($surat->tanggal_surat)) : date('Y-m-d'); ?>" required>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Waktu *</label>
                 <input type="time" name="waktu" class="w-full border border-gray-300 rounded px-4 py-2" 
-                    value="<?php echo isset($surat) ? $surat->waktu : ''; ?>" required>
+                    value="<?php echo isset($surat) ? date('H:i', strtotime($surat->waktu_panggilan)) : ''; ?>" required>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tempat</label>
                 <input type="text" name="tempat" class="w-full border border-gray-300 rounded px-4 py-2" 
-                    value="<?php echo isset($surat) ? $surat->tempat : 'Ruang BK'; ?>" placeholder="Ruang BK">
+                    value="Ruang BK" placeholder="Ruang BK">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Masalah *</label>
                 <select name="jenis" class="w-full border border-gray-300 rounded px-4 py-2" required>
-                    <option value="alpha" <?php echo isset($surat) && $surat->jenis == 'alpha' ? 'selected' : ''; ?>>Alpha/Tidak Masuk</option>
-                    <option value="terlambat" <?php echo isset($surat) && $surat->jenis == 'terlambat' ? 'selected' : ''; ?>>Terlambat</option>
+                    <option value="alpha">Alpha/Tidak Masuk</option>
+                    <option value="terlambat">Terlambat</option>
                 </select>
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan Masalah *</label>
                 <textarea name="keterangan" rows="4" class="w-full border border-gray-300 rounded px-4 py-2" 
-                    placeholder="Uraikan masalah kedisiplinan siswa..." required><?php echo isset($surat) ? $surat->keterangan : ''; ?></textarea>
+                    placeholder="Uraikan masalah kedisiplinan siswa..." required><?php echo isset($surat) ? $surat->alasan : ''; ?></textarea>
             </div>
         </div>
 

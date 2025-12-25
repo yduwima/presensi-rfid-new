@@ -69,7 +69,6 @@ class Surat extends CI_Controller {
         // Validation
         $this->form_validation->set_rules('siswa_id', 'Siswa', 'required');
         $this->form_validation->set_rules('nomor_surat', 'Nomor Surat', 'required');
-        $this->form_validation->set_rules('hari', 'Hari', 'required');
         $this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
         $this->form_validation->set_rules('waktu', 'Waktu', 'required');
         $this->form_validation->set_rules('keterangan', 'Keterangan', 'required');
@@ -79,15 +78,23 @@ class Surat extends CI_Controller {
             redirect('bk/surat/create');
         }
         
+        // Get current user's guru_id
+        $user_id = $this->session->userdata('user_id');
+        $guru = $this->Guru_model->get_by_user_id($user_id);
+        
+        // Combine date and time for waktu_panggilan
+        $tanggal = $this->input->post('tanggal');
+        $waktu = $this->input->post('waktu');
+        $waktu_panggilan = $tanggal . ' ' . $waktu . ':00';
+        
         $data = array(
             'siswa_id' => $this->input->post('siswa_id'),
             'nomor_surat' => $this->input->post('nomor_surat'),
-            'hari' => $this->input->post('hari'),
-            'tanggal' => $this->input->post('tanggal'),
-            'waktu' => $this->input->post('waktu'),
-            'tempat' => $this->input->post('tempat'),
-            'keterangan' => $this->input->post('keterangan'),
-            'jenis' => $this->input->post('jenis')
+            'tanggal_surat' => $tanggal,
+            'waktu_panggilan' => $waktu_panggilan,
+            'alasan' => $this->input->post('keterangan'),
+            'guru_bk_id' => $guru->id,
+            'status' => 'terkirim'
         );
         
         $result = $this->Surat_bk_model->create($data);
@@ -121,7 +128,6 @@ class Surat extends CI_Controller {
     public function update($id) {
         // Validation
         $this->form_validation->set_rules('nomor_surat', 'Nomor Surat', 'required');
-        $this->form_validation->set_rules('hari', 'Hari', 'required');
         $this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
         $this->form_validation->set_rules('waktu', 'Waktu', 'required');
         $this->form_validation->set_rules('keterangan', 'Keterangan', 'required');
@@ -131,14 +137,16 @@ class Surat extends CI_Controller {
             redirect('bk/surat/edit/' . $id);
         }
         
+        // Combine date and time for waktu_panggilan
+        $tanggal = $this->input->post('tanggal');
+        $waktu = $this->input->post('waktu');
+        $waktu_panggilan = $tanggal . ' ' . $waktu . ':00';
+        
         $data = array(
             'nomor_surat' => $this->input->post('nomor_surat'),
-            'hari' => $this->input->post('hari'),
-            'tanggal' => $this->input->post('tanggal'),
-            'waktu' => $this->input->post('waktu'),
-            'tempat' => $this->input->post('tempat'),
-            'keterangan' => $this->input->post('keterangan'),
-            'jenis' => $this->input->post('jenis')
+            'tanggal_surat' => $tanggal,
+            'waktu_panggilan' => $waktu_panggilan,
+            'alasan' => $this->input->post('keterangan')
         );
         
         $result = $this->Surat_bk_model->update($id, $data);
@@ -187,7 +195,7 @@ class Surat extends CI_Controller {
         
         // Letter number and date
         $pdf->Cell(0, 6, 'Nomor: ' . $surat->nomor_surat, 0, 1);
-        $pdf->Cell(0, 6, 'Tanggal: ' . date('d F Y', strtotime($surat->tanggal)), 0, 1);
+        $pdf->Cell(0, 6, 'Tanggal: ' . date('d F Y', strtotime($surat->tanggal_surat)), 0, 1);
         $pdf->Ln(5);
         
         // Greeting
@@ -223,7 +231,7 @@ class Surat extends CI_Controller {
         // Problem description
         $pdf->MultiCell(0, 6, 'Memiliki masalah kedisiplinan sebagai berikut:');
         $pdf->Ln(2);
-        $pdf->MultiCell(0, 6, $surat->keterangan);
+        $pdf->MultiCell(0, 6, $surat->alasan);
         $pdf->Ln(3);
         
         // Meeting request
@@ -231,17 +239,21 @@ class Surat extends CI_Controller {
         $pdf->MultiCell(0, 6, $meeting_text);
         $pdf->Ln(2);
         
+        // Extract day name from waktu_panggilan datetime
+        $days = array('Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu');
+        $day_name = $days[date('l', strtotime($surat->waktu_panggilan))];
+        
         $pdf->Cell(40, 6, 'Hari/Tanggal', 0, 0);
         $pdf->Cell(5, 6, ':', 0, 0);
-        $pdf->Cell(0, 6, $surat->hari . ', ' . date('d F Y', strtotime($surat->tanggal)), 0, 1);
+        $pdf->Cell(0, 6, $day_name . ', ' . date('d F Y', strtotime($surat->waktu_panggilan)), 0, 1);
         
         $pdf->Cell(40, 6, 'Waktu', 0, 0);
         $pdf->Cell(5, 6, ':', 0, 0);
-        $pdf->Cell(0, 6, $surat->waktu . ' WIB', 0, 1);
+        $pdf->Cell(0, 6, date('H:i', strtotime($surat->waktu_panggilan)) . ' WIB', 0, 1);
         
         $pdf->Cell(40, 6, 'Tempat', 0, 0);
         $pdf->Cell(5, 6, ':', 0, 0);
-        $pdf->Cell(0, 6, $surat->tempat ? $surat->tempat : 'Ruang BK ' . $settings->nama_sekolah, 0, 1);
+        $pdf->Cell(0, 6, 'Ruang BK ' . $settings->nama_sekolah, 0, 1);
         $pdf->Ln(5);
         
         // Closing
