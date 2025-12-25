@@ -4,6 +4,7 @@
 -- This enables all 7 days to be scheduled, with working days controlled by hari_kerja.is_active
 
 -- Alter the jadwal_pelajaran table to include 'Minggu' in the hari ENUM
+-- NOTE: Keep this ENUM list in sync with database/presensi_rfid.sql
 ALTER TABLE `jadwal_pelajaran` 
 MODIFY COLUMN `hari` enum('Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu') NOT NULL;
 
