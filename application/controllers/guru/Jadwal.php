@@ -39,7 +39,7 @@ class Jadwal extends CI_Controller {
         $data['jadwal_per_hari'] = $this->group_by_day($data['jadwal']);
         
         // Days of week in Indonesian
-        $data['hari'] = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $data['hari'] = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
         
         $data['title'] = 'Jadwal Mengajar Saya';
         $this->load->view('templates/guru_header', $data);
@@ -55,7 +55,8 @@ class Jadwal extends CI_Controller {
             'Rabu' => [],
             'Kamis' => [],
             'Jumat' => [],
-            'Sabtu' => []
+            'Sabtu' => [],
+            'Minggu' => []
         ];
         
         foreach ($jadwal as $j) {

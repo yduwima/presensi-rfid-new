@@ -73,7 +73,8 @@
                                                         'Wednesday' => 'Rabu',
                                                         'Thursday' => 'Kamis',
                                                         'Friday' => 'Jumat',
-                                                        'Saturday' => 'Sabtu'
+                                                        'Saturday' => 'Sabtu',
+                                                        'Sunday' => 'Minggu'
                                                     ];
                                                     $today_indo = isset($day_map[$today]) ? $day_map[$today] : '';
                                                     ?>
