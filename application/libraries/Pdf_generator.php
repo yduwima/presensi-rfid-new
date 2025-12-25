@@ -24,7 +24,16 @@ class Pdf_generator {
     {
         $this->pdf = new FPDF($orientation, $unit, $size);
         $this->pdf->SetAutoPageBreak(true, 10);
+        $this->pdf->AddPage();
         return $this->pdf;
+    }
+    
+    /**
+     * Alias for create() method
+     */
+    public function create_pdf($orientation = 'P', $unit = 'mm', $size = 'A4')
+    {
+        return $this->create($orientation, $unit, $size);
     }
     
     /**
@@ -33,6 +42,14 @@ class Pdf_generator {
     public function get_instance()
     {
         return $this->pdf;
+    }
+    
+    /**
+     * Alias for get_instance() method
+     */
+    public function get_pdf()
+    {
+        return $this->get_instance();
     }
     
     /**
