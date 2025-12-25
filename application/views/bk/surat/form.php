@@ -54,7 +54,8 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tempat</label>
                 <input type="text" name="tempat" class="w-full border border-gray-300 rounded px-4 py-2" 
-                    value="Ruang BK" placeholder="Ruang BK">
+                    value="Ruang BK" placeholder="Ruang BK" readonly>
+                <p class="text-xs text-gray-500 mt-1">Lokasi pertemuan (default: Ruang BK)</p>
             </div>
 
             <div>
@@ -62,7 +63,9 @@
                 <select name="jenis" class="w-full border border-gray-300 rounded px-4 py-2" required>
                     <option value="alpha">Alpha/Tidak Masuk</option>
                     <option value="terlambat">Terlambat</option>
+                    <option value="lainnya">Lainnya</option>
                 </select>
+                <p class="text-xs text-gray-500 mt-1">Kategori masalah kedisiplinan</p>
             </div>
 
             <div class="md:col-span-2">

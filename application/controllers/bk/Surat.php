@@ -82,6 +82,12 @@ class Surat extends CI_Controller {
         $user_id = $this->session->userdata('user_id');
         $guru = $this->Guru_model->get_by_user_id($user_id);
         
+        if (!$guru) {
+            $this->session->set_flashdata('error', 'Data guru tidak ditemukan');
+            redirect('bk/surat');
+            return;
+        }
+        
         // Combine date and time for waktu_panggilan
         $tanggal = $this->input->post('tanggal');
         $waktu = $this->input->post('waktu');
